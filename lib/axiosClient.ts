@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: 'https://unthreatening-hendrix-lilied.ngrok-free.dev',
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
+    // ĐÂY LÀ CHÌA KHÓA: Ép Ngrok bỏ qua trang interstitial
+    'ngrok-skip-browser-warning': '69420',
   },
-  withCredentials: true, // Sống còn: Giúp Next.js mang theo Cookie session!
+  withCredentials: true, // Quan trọng để gửi Session/Cookie
 });
 
 export default axiosClient;
