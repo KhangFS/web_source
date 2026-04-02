@@ -40,10 +40,10 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
         <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-2">
           <button
             onClick={() => onSelectMajor(null)}
-            className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${
+            className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center whitespace-nowrap ${
               selectedMajor === null
                 ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
-                : 'border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
             }`}
           >
             Tất cả ngành
@@ -57,10 +57,10 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
               <button
                 key={`major-${majorId}`}
                 onClick={() => onSelectMajor(majorId)}
-                className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${
+                className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center whitespace-nowrap ${
                   selectedMajor === majorId
                     ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
-                    : 'border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                    : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
                 {majorName}
@@ -80,10 +80,10 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
         <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2">
           <button
             onClick={() => onSelectSubject(null)}
-            className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${
+            className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center whitespace-nowrap ${
               selectedSubject === null
                 ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
-                : 'border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
             }`}
           >
             Tất cả môn học
@@ -98,10 +98,10 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
                 <button
                   key={`subject-${subjectId}`}
                   onClick={() => onSelectSubject(subjectId)}
-                  className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${
+                  className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center whitespace-nowrap ${
                     selectedSubject === subjectId
                       ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
-                      : 'border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                      : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
                   {subjectName}
@@ -109,7 +109,7 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
               );
             })
           ) : (
-            <p className="text-xs text-gray-400 italic px-3 md:px-4 py-2">
+            <p className="text-xs text-gray-500 italic px-3 md:px-4 py-2">
               Hãy chọn một ngành để xem danh sách môn học.
             </p>
           )}
@@ -131,24 +131,9 @@ export function FilterSidebar({
 }: FilterSidebarProps) {
   return (
     <>
-      {/* Desktop Sidebar - Always Visible on lg+ */}
-      <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto pr-2">
-        <FilterContent
-          majors={majors}
-          subjects={subjects}
-          selectedMajor={selectedMajor}
-          onSelectMajor={onSelectMajor}
-          selectedSubject={selectedSubject}
-          onSelectSubject={onSelectSubject}
-        />
-      </aside>
-
-      {/* Mobile Drawer - Triggered by FAB */}
-      <Sheet open={isOpen} onOpenChange={onOpenChange}>
-        <SheetContent side="left" className="w-full sm:w-3/4 max-w-xs lg:hidden">
-          <SheetHeader className="mb-6">
-            <SheetTitle>Bộ lọc</SheetTitle>
-          </SheetHeader>
+      {/* Desktop Sidebar - Sticky, only visible on lg+ screens */}
+      <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-[68px] h-[calc(100vh-68px)] overflow-y-auto border-r border-gray-100 bg-white pr-2">
+        <div className="p-6">
           <FilterContent
             majors={majors}
             subjects={subjects}
@@ -157,6 +142,25 @@ export function FilterSidebar({
             selectedSubject={selectedSubject}
             onSelectSubject={onSelectSubject}
           />
+        </div>
+      </aside>
+
+      {/* Mobile Drawer - Only visible on md:hidden screens */}
+      <Sheet open={isOpen} onOpenChange={onOpenChange}>
+        <SheetContent side="left" className="w-full sm:w-3/4 max-w-xs md:hidden">
+          <SheetHeader className="mb-6">
+            <SheetTitle className="text-gray-900">Bộ lọc</SheetTitle>
+          </SheetHeader>
+          <div className="overflow-y-auto max-h-[calc(100vh-100px)]">
+            <FilterContent
+              majors={majors}
+              subjects={subjects}
+              selectedMajor={selectedMajor}
+              onSelectMajor={onSelectMajor}
+              selectedSubject={selectedSubject}
+              onSelectSubject={onSelectSubject}
+            />
+          </div>
         </SheetContent>
       </Sheet>
     </>

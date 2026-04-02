@@ -213,20 +213,6 @@ export function DashboardScreen() {
         />
       )}
       
-      {/* Mobile Drawer for Filters */}
-      {currentView === 'explore' && (
-        <FilterSidebar 
-          majors={majors}
-          subjects={displayedSubjects}
-          selectedMajor={selectedMajor}
-          onSelectMajor={setSelectedMajor}
-          selectedSubject={selectedSubject}
-          onSelectSubject={setSelectedSubject}
-          isOpen={isFilterOpen}
-          onOpenChange={setIsFilterOpen}
-        />
-      )}
-      
       {renderCurrentView()}
     </div>
   );
