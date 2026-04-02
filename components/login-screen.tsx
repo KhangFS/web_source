@@ -64,8 +64,8 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
     return (
       <div className="min-h-screen bg-[#fafafa] relative animate-in fade-in duration-300 font-sans">
         <div className="absolute top-6 left-6 z-50">
-          <button 
-            onClick={() => setShowContact(false)} 
+          <button
+            onClick={() => setShowContact(false)}
             className="flex items-center gap-2 px-5 py-2.5 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all font-bold"
           >
             ← Quay lại Đăng nhập
@@ -86,24 +86,27 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
 
       <header className="relative z-10 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4 grid grid-cols-3 items-center">
+          {/* LOGO: Giữ nguyên font-bold làm mỏ neo thiết kế */}
           <div className="flex items-center gap-2 font-bold text-xl text-teal-600">
-          <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
-            <span className="text-white">K</span>
+            <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
+              <span className="text-white">K</span>
+            </div>
+            Knowledge Hub
           </div>
-          Knowledge Hub
-        </div>
 
           <nav className="flex justify-center">
-            <button 
-              onClick={() => setShowContact(true)} 
-              className="text-gray-500 hover:text-[#0d9488] font-black transition-all text-xs uppercase tracking-[0.2em]"
+            {/* ĐÃ ĐỒNG BỘ: Dùng font-bold, bỏ uppercase và tracking */}
+            <button
+              onClick={() => setShowContact(true)}
+              className="text-gray-500 hover:text-[#0d9488] font-bold transition-all text-sm"
             >
               Liên hệ
             </button>
           </nav>
 
           <div className="flex justify-end invisible md:visible">
-            <span className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">Hệ thống UIT</span>
+            {/* ĐÃ ĐỒNG BỘ: Dùng font-bold, bỏ uppercase và tracking */}
+            <span className="text-sm font-bold text-gray-400">Hệ thống UIT</span>
           </div>
         </div>
       </header>
@@ -114,51 +117,55 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
             <div className="bg-[#fcfcfc] p-12 flex flex-col items-center justify-center border-r border-gray-50">
               <div className="text-center">
                 <div className="text-8xl mb-8 animate-pulse drop-shadow-xl">🚀</div>
-                <h3 className="text-gray-900 font-black text-2xl mb-2 tracking-tight">Hành trình GPA 9+</h3>
-                <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.25em]">Nền tảng tri thức sinh viên UIT</p>
+                {/* ĐÃ ĐỒNG BỘ: Chuyển về font-bold */}
+                <h3 className="text-gray-900 font-bold text-2xl mb-2">Hành trình GPA 9+</h3>
+                <p className="text-gray-500 text-sm font-medium">Nền tảng tri thức sinh viên UIT</p>
               </div>
             </div>
 
             <div className="p-10 md:p-14 bg-white flex flex-col justify-center">
               <div className="space-y-8">
                 <div>
-                  {/* Tiêu đề chính: font-black + tracking-tight */}
-                  <h2 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">
+                  {/* ĐÃ ĐỒNG BỘ: Chuyển về font-bold */}
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">
                     {isLogin ? 'Chào mừng trở lại' : 'Gia nhập Hub'}
                   </h2>
-                  <p className="text-gray-400 text-sm font-bold tracking-tight">
+                  <p className="text-gray-500 text-sm font-medium">
                     {isLogin ? 'Đăng nhập để tiếp tục học tập và chia sẻ.' : 'Bắt đầu xây dựng lộ trình học tập của bạn.'}
                   </p>
                 </div>
 
                 <div className="space-y-5">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] ml-1">Tên đăng nhập</label>
+                    {/* ĐÃ ĐỒNG BỘ: Bỏ uppercase, dùng font-bold cỡ chữ thường */}
+                    <label className="text-sm font-bold text-gray-700 ml-1">Tên đăng nhập</label>
                     <input
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder="Nhập tên đăng nhập..."
-                      className="w-full px-5 py-4 text-sm bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#0d9488] focus:bg-white transition-all outline-none font-bold placeholder:font-medium placeholder:text-gray-300"
+                      className="w-full px-5 py-4 text-sm bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#0d9488] focus:bg-white transition-all outline-none font-medium placeholder:font-normal placeholder:text-gray-400"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] ml-1">Mật khẩu</label>
+                    {/* ĐÃ ĐỒNG BỘ: Bỏ uppercase, dùng font-bold cỡ chữ thường */}
+                    <label className="text-sm font-bold text-gray-700 ml-1">Mật khẩu</label>
                     <input
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-5 py-4 text-sm bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#0d9488] focus:bg-white transition-all outline-none font-bold"
+                      className="w-full px-5 py-4 text-sm bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#0d9488] focus:bg-white transition-all outline-none font-medium"
                     />
                   </div>
                   {!isLogin && (
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] ml-1">Ngành học</label>
+                      {/* ĐÃ ĐỒNG BỘ: Bỏ uppercase, dùng font-bold cỡ chữ thường */}
+                      <label className="text-sm font-bold text-gray-700 ml-1">Ngành học</label>
                       <select
                         value={selectedMajor}
                         onChange={(e) => setSelectedMajor(e.target.value)}
-                        className="w-full px-5 py-4 text-sm bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#0d9488] focus:bg-white transition-all outline-none font-bold appearance-none cursor-pointer"
+                        className="w-full px-5 py-4 text-sm bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#0d9488] focus:bg-white transition-all outline-none font-medium appearance-none cursor-pointer"
                       >
                         {majors.map(m => <option key={m.id || m.major_id} value={m.id || m.major_id}>{m.name || m.major_name}</option>)}
                       </select>
@@ -166,18 +173,20 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
                   )}
                 </div>
 
+                {/* ĐÃ ĐỒNG BỘ: Dùng font-bold thay vì font-black, cỡ chữ chuẩn text-base */}
                 <button
                   onClick={handleAuth}
                   disabled={isLoading || !username || !password}
-                  className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-black py-5 rounded-2xl transition-all shadow-[0_10px_30px_-5px_rgba(13,148,136,0.3)] flex justify-center items-center gap-2 uppercase tracking-[0.2em] text-xs active:scale-95"
+                  className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-bold text-base py-4 rounded-2xl transition-all shadow-[0_10px_30px_-5px_rgba(13,148,136,0.3)] flex justify-center items-center gap-2 active:scale-95"
                 >
                   {isLoading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : (isLogin ? 'Đăng nhập' : 'Tạo tài khoản')}
                 </button>
 
                 <div className="text-center pt-2">
-                  <button 
-                    onClick={() => setIsLogin(!isLogin)} 
-                    className="text-[10px] font-black text-gray-400 hover:text-[#0d9488] transition-colors uppercase tracking-widest"
+                  {/* ĐÃ ĐỒNG BỘ: Chuyển về font-bold, bỏ uppercase */}
+                  <button
+                    onClick={() => setIsLogin(!isLogin)}
+                    className="text-sm font-bold text-gray-500 hover:text-[#0d9488] transition-colors"
                   >
                     {isLogin ? 'Bạn chưa có tài khoản? Tạo mới' : 'Đã có tài khoản? Đăng nhập ngay'}
                   </button>
