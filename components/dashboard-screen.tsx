@@ -5,6 +5,7 @@ import axiosClient from '../lib/axiosClient';
 
 import { TopNavigation } from './top-navigation';
 import { FilterSidebar } from './filter-sidebar';
+import { FilterFAB } from './filter-fab';
 import { DocumentReader } from './document-reader';
 import { CommunityView } from './community-view';
 import { UploadView } from './upload-view';
@@ -18,6 +19,7 @@ export function DashboardScreen() {
   const [currentView, setCurrentView] = useState<ViewState>('explore');
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   
   const [materials, setMaterials] = useState<any[]>([]); 
   const [majors, setMajors] = useState<any[]>([]);
@@ -32,7 +34,6 @@ export function DashboardScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Gọi thẳng API, KHÔNG DÙNG Mock Data nữa. Sập là phải báo lỗi để sửa!
         const [matRes, majRes, subRes] = await Promise.all([
           axiosClient.get('/materials'),
           axiosClient.get('/roadmap/majors'),
@@ -44,7 +45,6 @@ export function DashboardScreen() {
         setSubjects(subRes.data);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu hệ thống:", error);
-        // Có thể thêm 1 state error ở đây để hiển thị thông báo ra màn hình nếu muốn
       } finally {
         setIsLoading(false);
       }
@@ -85,70 +85,86 @@ export function DashboardScreen() {
     switch (currentView) {
       case 'explore':
         return (
-          <div className="max-w-7xl mx-auto px-6 py-8 flex items-start gap-8">
-            <FilterSidebar 
-              majors={majors}
-              subjects={displayedSubjects}
-              selectedMajor={selectedMajor}
-              onSelectMajor={setSelectedMajor}
-              selectedSubject={selectedSubject}
-              onSelectSubject={setSelectedSubject}
-            />
-            
-            <main className="flex-1">
-              <div className="flex justify-between items-center mb-6">
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {processedMaterials.length} Kết quả
-                  {searchQuery && <span> cho "{searchQuery}"</span>}
-                </h1>
-                
-                <div className="flex items-center gap-2">
-                  <label className="text-sm text-gray-600 font-medium">Sắp xếp:</label>
-                  <select 
-                    value={sortOrder} 
-                    onChange={(e) => setSortOrder(e.target.value as any)}
-                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-800 outline-none focus:border-teal-500 bg-white shadow-sm"
-                  >
-                    <option value="newest">Mới nhất</option>
-                    <option value="a-z">Tên (A-Z)</option>
-                    <option value="z-a">Tên (Z-A)</option>
-                  </select>
-                </div>
-              </div>
+          <div className="w-full px-4 md:px-6 lg:px-0 py-4 md:py-6 flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
+            <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
+              {/* Desktop Sidebar - Visible on lg+ */}
+              <FilterSidebar 
+                majors={majors}
+                subjects={displayedSubjects}
+                selectedMajor={selectedMajor}
+                onSelectMajor={setSelectedMajor}
+                selectedSubject={selectedSubject}
+                onSelectSubject={setSelectedSubject}
+                isOpen={isFilterOpen}
+                onOpenChange={setIsFilterOpen}
+              />
               
-              {isLoading ? (
-                <div className="text-gray-500 animate-pulse bg-white p-6 rounded-xl border border-gray-100 shadow-sm">Đang đồng bộ dữ liệu với máy chủ...</div>
-              ) : processedMaterials.length === 0 ? (
-                <div className="text-center py-12 bg-white rounded-xl border border-dashed border-gray-300 shadow-sm">
-                  <div className="text-4xl mb-3">📭</div>
-                  <p className="text-gray-500 font-medium">Không có tài liệu nào phù hợp với bộ lọc này.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {processedMaterials.map((mat) => (
-                    <div 
-                      key={mat.id} 
-                      onClick={() => handleDocumentClick(mat)} 
-                      className="p-5 bg-white rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:border-teal-100 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group"
+              {/* Main Content */}
+              <main className="w-full flex-1 min-w-0">
+                {/* Header with Results Count and Sort */}
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                  <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+                    {processedMaterials.length} Kết quả
+                    {searchQuery && <span className="text-base md:text-lg"> cho "{searchQuery}"</span>}
+                  </h1>
+                  
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <label className="text-xs md:text-sm text-gray-600 font-medium whitespace-nowrap">Sắp xếp:</label>
+                    <select 
+                      value={sortOrder} 
+                      onChange={(e) => setSortOrder(e.target.value as any)}
+                      className="flex-1 sm:flex-none border border-gray-200 rounded-lg px-3 py-2 text-xs md:text-sm text-gray-800 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 bg-white transition-all min-h-[44px]"
                     >
-                      <div>
-                        <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-2 group-hover:text-teal-700 transition-colors">{mat.title}</h3>
-                        <p className="text-sm text-gray-500 mb-4 bg-gray-50 inline-block px-2 py-1 rounded-md">Môn học ID: {mat.subject_id}</p>
-                      </div>
-                      <a 
-                        href={mat.drive_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="w-full py-2.5 bg-teal-50 text-teal-700 text-sm font-semibold rounded-lg hover:bg-teal-100 hover:shadow-sm transition-all inline-block text-center mt-auto"
-                        onClick={(e) => e.stopPropagation()} 
-                      >
-                        Mở tab Drive mới
-                      </a>
-                    </div>
-                  ))}
+                      <option value="newest">Mới nhất</option>
+                      <option value="a-z">Tên (A-Z)</option>
+                      <option value="z-a">Tên (Z-A)</option>
+                    </select>
+                  </div>
                 </div>
-              )}
-            </main>
+                
+                {/* Loading State */}
+                {isLoading ? (
+                  <div className="text-center py-8 md:py-12 bg-white p-6 rounded-lg md:rounded-2xl border border-gray-100 shadow-sm animate-pulse">
+                    <div className="text-gray-500 text-sm md:text-base">Đang đồng bộ dữ liệu với máy chủ...</div>
+                  </div>
+                ) : processedMaterials.length === 0 ? (
+                  /* Empty State */
+                  <div className="text-center py-8 md:py-12 bg-white rounded-lg md:rounded-2xl border border-dashed border-gray-300 shadow-sm">
+                    <div className="text-3xl md:text-4xl mb-3">📭</div>
+                    <p className="text-sm md:text-base text-gray-500 font-medium px-4">Không có tài liệu nào phù hợp với bộ lọc này.</p>
+                  </div>
+                ) : (
+                  /* Document Grid - List View on Mobile, Grid on md+ */
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
+                    {processedMaterials.map((mat) => (
+                      <div 
+                        key={mat.id} 
+                        onClick={() => handleDocumentClick(mat)} 
+                        className="p-4 md:p-5 bg-white rounded-lg md:rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:border-teal-100 hover:-translate-y-1 active:scale-95 transition-all duration-200 flex flex-col justify-between group min-h-[200px]"
+                      >
+                        <div className="min-w-0">
+                          <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-2 md:mb-3 line-clamp-2 group-hover:text-teal-700 transition-colors">
+                            {mat.title}
+                          </h3>
+                          <p className="text-xs md:text-sm text-gray-500 mb-3 md:mb-4 bg-gray-50 inline-block px-2 py-1 rounded-md">
+                            Môn học ID: {mat.subject_id}
+                          </p>
+                        </div>
+                        <a 
+                          href={mat.drive_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="w-full py-2 md:py-2.5 bg-teal-50 text-teal-700 text-xs md:text-sm font-semibold rounded-lg md:rounded-xl hover:bg-teal-100 hover:shadow-sm transition-all inline-block text-center mt-auto min-h-[44px] flex items-center justify-center"
+                          onClick={(e) => e.stopPropagation()} 
+                        >
+                          Mở Drive
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </main>
+            </div>
           </div>
         );
       case 'reading':
@@ -173,7 +189,6 @@ export function DashboardScreen() {
       case 'profile':
         return <ProfileView />;
       case 'progress':
-        // ĐÃ SỬA: Bỏ các props thừa thãi do LearningProgressView mới đã tự lo
         return <LearningProgressView />;
       default:
         return null;
@@ -189,6 +204,29 @@ export function DashboardScreen() {
         onSearchChange={setSearchQuery}
         showSearch={currentView === 'explore'} 
       />
+      
+      {/* Mobile Filter FAB - Only shown on small screens during explore view */}
+      {currentView === 'explore' && (
+        <FilterFAB 
+          onClick={() => setIsFilterOpen(true)} 
+          isOpen={isFilterOpen}
+        />
+      )}
+      
+      {/* Mobile Drawer for Filters */}
+      {currentView === 'explore' && (
+        <FilterSidebar 
+          majors={majors}
+          subjects={displayedSubjects}
+          selectedMajor={selectedMajor}
+          onSelectMajor={setSelectedMajor}
+          selectedSubject={selectedSubject}
+          onSelectSubject={setSelectedSubject}
+          isOpen={isFilterOpen}
+          onOpenChange={setIsFilterOpen}
+        />
+      )}
+      
       {renderCurrentView()}
     </div>
   );
