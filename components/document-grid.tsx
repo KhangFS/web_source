@@ -1,61 +1,67 @@
+'use client';
+
 import { DocumentCard } from './document-card';
 
-const documents = [
-  {
-    title: 'Python Basics',
-    subtitle: 'Python',
-    gradient: 'bg-gradient-to-br from-pink-200 via-purple-100 to-blue-200',
-  },
-  {
-    title: 'Financial Modeling',
-    subtitle: 'Financial',
-    gradient: 'bg-gradient-to-br from-purple-200 via-blue-100 to-cyan-200',
-  },
-  {
-    title: 'Design',
-    subtitle: 'Design',
-    gradient: 'bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-200',
-  },
-  {
-    title: 'Python Basics',
-    subtitle: 'Python',
-    gradient: 'bg-gradient-to-br from-rose-100 via-pink-100 to-purple-200',
-  },
-  {
-    title: 'Financial Modeling',
-    subtitle: 'Financial',
-    gradient: 'bg-gradient-to-br from-sky-200 via-blue-100 to-indigo-200',
-  },
-  {
-    title: 'Design Principles',
-    subtitle: 'Design',
-    gradient: 'bg-gradient-to-br from-yellow-200 via-amber-100 to-orange-200',
-  },
+const PROFESSIONAL_GRADIENTS = [
+  'bg-gradient-to-br from-blue-500 to-cyan-400',
+  'bg-gradient-to-br from-purple-500 to-indigo-500',
+  'bg-gradient-to-br from-teal-500 to-emerald-500',
+  'bg-gradient-to-br from-orange-400 to-pink-500',
+  'bg-gradient-to-br from-slate-700 to-slate-900',
+  'bg-gradient-to-br from-rose-500 to-amber-500',
 ];
 
 interface DocumentGridProps {
-  onDocumentClick: (title: string) => void;
+  materials: any[];     
+  subjects: any[];      
+  onDocumentClick: (doc: any) => void;
 }
 
-export function DocumentGrid({ onDocumentClick }: DocumentGridProps) {
-  return (
-    <div className="relative">
-      {/* Decorative elements */}
-      <div className="absolute -top-2 left-4 w-2 h-2 rounded-full bg-pink-300 opacity-60" />
-      <div className="absolute top-8 left-0 w-3 h-3 rotate-45 bg-gradient-to-br from-pink-300 to-purple-300 opacity-50" />
-      <div className="absolute top-1/2 right-0 w-2 h-2 rounded-full bg-cyan-300 opacity-50" />
+export function DocumentGrid({ materials, subjects, onDocumentClick }: DocumentGridProps) {
+  
+  // Hàm Fallback: Chặn đứng lỗi "ID: 114" bằng cách ép kiểu an toàn
+  const getFallbackSubjectName = (subjectId: any) => {
+    if (!subjectId) return 'Tài liệu chung';
+    // Ép kiểu cả 2 về String để so sánh an toàn tuyệt đối
+    const subject = subjects.find(s => String(s.subject_id || s.id) === String(subjectId));
+    return subject ? (subject.subject_name || subject.name) : `Môn học #${subjectId}`;
+  };
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {documents.map((doc, index) => (
-          <DocumentCard
-            key={index}
-            title={doc.title}
-            subtitle={doc.subtitle}
-            gradient={doc.gradient}
-            onClick={() => onDocumentClick(doc.title)}
-          />
-        ))}
+  // Màn hình trống
+  if (!materials || materials.length === 0) {
+    return (
+      <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-100 shadow-sm animate-in fade-in">
+        <div className="text-5xl mb-4 opacity-70">🔍</div>
+        <h3 className="text-xl font-bold text-gray-900">Không tìm thấy tài liệu</h3>
+        <p className="text-gray-500 mt-2">Hãy thử thay đổi bộ lọc hoặc từ khóa tìm kiếm bạn nhé!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative animate-in fade-in duration-500">
+      {/* Trang trí Background */}
+      <div className="absolute -top-6 -left-6 w-12 h-12 bg-teal-200 rounded-full blur-3xl opacity-20 pointer-events-none" />
+      <div className="absolute top-1/2 -right-6 w-16 h-16 bg-blue-200 rounded-full blur-3xl opacity-20 pointer-events-none" />
+
+      {/* Lưới Tài liệu */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+        {materials.map((doc, index) => {
+          // ƯU TIÊN 1: Lấy tên môn học Backend đã JOIN sẵn (doc.subject_name)
+          // ƯU TIÊN 2: Lấy từ object lồng nhau (doc.subject.name)
+          // DỰ PHÒNG: Tự đi dò tìm trong list subjects Frontend (getFallbackSubjectName)
+          const displaySubjectName = doc.subject_name || doc.subject?.name || getFallbackSubjectName(doc.subject_id);
+
+          return (
+            <DocumentCard
+              key={`doc-${doc.id}`}
+              title={doc.title}
+              subtitle={displaySubjectName}
+              gradient={PROFESSIONAL_GRADIENTS[index % PROFESSIONAL_GRADIENTS.length]}
+              onClick={() => onDocumentClick(doc)}
+            />
+          );
+        })}
       </div>
     </div>
   );

@@ -1,103 +1,69 @@
 'use client';
 
-import { Search } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Search, User } from 'lucide-react';
 
-export type ViewState =
-  | 'explore'
-  | 'reading'
-  | 'community'
-  | 'upload'
-  | 'contact'
-  | 'profile';
-
-interface NavLink {
-  name: string;
-  view: ViewState;
-}
-
-const navLinks: NavLink[] = [
-  { name: 'Explore', view: 'explore' },
-  { name: 'Community', view: 'community' },
-  { name: 'Upload', view: 'upload' },
-  { name: 'Contact Us', view: 'contact' },
-];
-
-interface TopNavigationProps {
-  currentView: ViewState;
-  onNavigate: (view: ViewState) => void;
-}
-
-export function TopNavigation({ currentView, onNavigate }: TopNavigationProps) {
-  // Check if current view matches the nav link (reading view should highlight Explore)
-  const isActive = (view: ViewState) => {
-    if (view === 'explore' && currentView === 'reading') return true;
-    return view === currentView;
-  };
+export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchChange, showSearch }: any) {
+  
+  // ĐÃ THÊM: Object 'progress' vào mảng định tuyến ở vị trí thứ 2
+  const navItems = [
+    { id: 'explore', label: 'Tài liệu' },
+    { id: 'progress', label: 'Tiến trình' }, // <-- NÚT TIẾN TRÌNH Ở ĐÂY NÀY!
+    { id: 'community', label: 'Cộng đồng' },                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+    { id: 'upload', label: 'Đăng tài liệu' },
+    { id: 'contact', label: 'Liên hệ' },
+  ];
 
   return (
-    <header className="flex items-center justify-between px-8 py-4 bg-white/80 backdrop-blur-sm border-b border-gray-100">
-      {/* Logo */}
-      <button
-        onClick={() => onNavigate('explore')}
-        className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-      >
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            className="w-5 h-5 text-white"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
-          </svg>
-        </div>
-      </button>
-
-      {/* Center Navigation */}
-      <nav className="flex items-center gap-1">
-        {navLinks.map((link) => (
-          <button
-            key={link.name}
-            onClick={() => onNavigate(link.view)}
-            className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
-              isActive(link.view)
-                ? 'bg-purple-100 text-purple-700'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-            }`}
-          >
-            {link.name}
-          </button>
-        ))}
-      </nav>
-
-      {/* Right Section */}
-      <div className="flex items-center gap-4">
-        {/* Animated Gradient Border Search */}
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 rounded-full opacity-75 blur-sm group-hover:opacity-100 animate-gradient-border" />
-          <div className="relative flex items-center gap-2 bg-white px-4 py-2 rounded-full">
-            <Search className="w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search"
-              className="bg-transparent text-sm outline-none w-24 placeholder:text-gray-400"
-            />
+    <nav className="bg-white border-b border-gray-100 px-6 py-4 sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        
+        {/* Logo */}
+        <div className="flex items-center gap-2 font-bold text-xl text-teal-600">
+          <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
+            <span className="text-white">K</span>
           </div>
+          Knowledge Hub
         </div>
 
-        {/* Avatar */}
-        <button
-          onClick={() => onNavigate('profile')}
-          className="hover:ring-4 hover:ring-purple-100 rounded-full transition-all"
-        >
-          <Avatar className="w-9 h-9 ring-2 ring-gray-100">
-            <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
-        </button>
+        {/* Menu Tabs */}
+        <div className="flex items-center gap-8">
+          {navItems.map(item => (
+            <button
+              key={item.id}
+              onClick={() => onNavigate(item.id)}
+              className={`font-semibold transition-colors ${
+                currentView === item.id || (currentView === 'reading' && item.id === 'explore')
+                  ? 'text-teal-600'
+                  : 'text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Search & Profile */}
+        <div className="flex items-center gap-4">
+          {showSearch && (
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Search documents..."
+                className="pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all w-64"
+              />
+            </div>
+          )}
+          <button 
+            onClick={() => onNavigate('profile')}
+            className="w-10 h-10 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center hover:bg-orange-200 transition-colors"
+          >
+            <User className="w-5 h-5" />
+          </button>
+        </div>
       </div>
-    </header>
+    </nav>
   );
 }
