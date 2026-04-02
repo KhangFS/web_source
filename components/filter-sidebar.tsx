@@ -8,18 +8,38 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 
-interface FilterSidebarProps {
-  majors: any[];
-  subjects: any[];
+// Type definitions for filter items
+type MajorItem = {
+  id?: string | number;
+  major_id?: string | number;
+  name?: string;
+  major_name?: string;
+  [key: string]: any;
+};
+
+type SubjectItem = {
+  subject_id?: string | number;
+  id?: string | number;
+  subject_name?: string;
+  name?: string;
+  [key: string]: any;
+};
+
+interface FilterContentProps {
+  majors: MajorItem[];
+  subjects: SubjectItem[];
   selectedMajor: number | null;
   onSelectMajor: (id: number | null) => void;
   selectedSubject: number | null;
   onSelectSubject: (id: number | null) => void;
+}
+
+interface FilterSidebarProps extends FilterContentProps {
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
-const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selectedSubject, onSelectSubject }: any) => (
+const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selectedSubject, onSelectSubject }: FilterContentProps) => (
   <>
     <div className="space-y-6 md:space-y-8">
       {/* Filter Title */}
@@ -49,7 +69,7 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
             Tất cả ngành
           </button>
           
-          {majors.map((major) => {
+          {majors.map((major: MajorItem) => {
             const majorId = major.id || major.major_id;
             const majorName = major.name || major.major_name;
 
@@ -90,7 +110,7 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
           </button>
           
           {subjects.length > 0 ? (
-            subjects.map((sub) => {
+            subjects.map((sub: SubjectItem) => {
               const subjectId = sub.subject_id || sub.id;
               const subjectName = sub.subject_name || sub.name;
 
