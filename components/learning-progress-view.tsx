@@ -273,18 +273,6 @@ export function LearningProgressView() {
     </div>
   );
 }
-
-  const handleUpdateRecord = async (subjectId: number, isCompleted: boolean, score: any) => {
-    try {
-      await axiosClient.post('/roadmap/grade', {
-        subject_id: subjectId,
-        is_completed: isCompleted,
-        score: score
-      });
-      fetchProgressData(); // Tải lại để cập nhật CGPA và biểu đồ
-    } catch (error) {
-      alert("Lỗi hệ thống: Không thể lưu điểm số!");
-    }
   };
 
   if (isLoading) return <div className="min-h-screen bg-[#fafafa] p-8 text-center animate-pulse text-gray-400 font-medium">Đang đồng bộ học bạ điện tử...</div>;
