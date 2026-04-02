@@ -273,11 +273,6 @@ export function LearningProgressView() {
     </div>
   );
 }
-  };
-
-  useEffect(() => {
-    fetchProgressData();
-  }, []);
 
   const handleUpdateRecord = async (subjectId: number, isCompleted: boolean, score: any) => {
     try {
