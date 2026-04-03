@@ -10,15 +10,24 @@ interface DocumentReaderProps {
 }
 
 export function DocumentReader({ onBack, document }: DocumentReaderProps) {
+  // 1. STATE NỘI BỘ: Chiếm quyền điều khiển tài liệu đang hiển thị
+  const [activeDocument, setActiveDocument] = useState<any>(document);
   const [relatedDocs, setRelatedDocs] = useState<any[]>([]);
   const [isLoadingRelated, setIsLoadingRelated] = useState(true);
 
+  // 2. ĐỒNG BỘ HÓA: Cập nhật activeDocument nếu người dùng bấm từ màn hình Khám phá vào
   useEffect(() => {
-    if (!document?.id) return;
+    setActiveDocument(document);
+  }, [document]);
+
+  // 3. FETCH DỮ LIỆU LIÊN QUAN: Lắng nghe sự thay đổi của activeDocument
+  useEffect(() => {
+    if (!activeDocument?.id) return;
 
     const fetchRelated = async () => {
+      setIsLoadingRelated(true); // Hiển thị vòng quay loading khi chuyển tài liệu
       try {
-        const res = await axiosClient.get(`/materials/${document.id}/related`);
+        const res = await axiosClient.get(`/materials/${activeDocument.id}/related`);
         setRelatedDocs(res.data);
       } catch (error) {
         console.error("Lỗi lấy tài liệu liên quan:", error);
@@ -28,9 +37,9 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
     };
 
     fetchRelated();
-  }, [document?.id]);
+  }, [activeDocument?.id]);
 
-  if (!document) return null;
+  if (!activeDocument) return null;
 
   // ĐÃ NÂNG CẤP: Bắt mọi thể loại link Drive (cả view lẫn edit) để chuyển thành preview
   const getEmbedUrl = (url: string) => {
@@ -41,7 +50,7 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
     return url;
   };
 
-  const embedUrl = getEmbedUrl(document.drive_url);
+  const embedUrl = getEmbedUrl(activeDocument.drive_url);
 
   return (
     <div className="flex-1 p-6 animate-in fade-in duration-300 bg-[#fafafa]">
@@ -55,15 +64,15 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
 
       <div className="flex flex-col lg:flex-row gap-6">
 
-        {/* Cột trái - Trình xem PDF (Đã thoát kiếp 0px) */}
+        {/* Cột trái - Trình xem PDF */}
         <div className="flex-1 bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200 flex flex-col h-[85vh]">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-teal-50 rounded-lg flex items-center justify-center shadow-sm">
                 <FileText className="w-4 h-4 text-teal-600" />
               </div>
-              <h2 className="text-sm text-gray-900 font-bold line-clamp-1" title={document.title}>
-                {document.title}
+              <h2 className="text-sm text-gray-900 font-bold line-clamp-1" title={activeDocument.title}>
+                {activeDocument.title}
               </h2>
             </div>
             <div className="flex items-center gap-4">
@@ -71,7 +80,7 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
                 Không preview được? Xem trực tuyến
               </div>
               <a
-                href={document.drive_url}
+                href={activeDocument.drive_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-teal-600 transition-colors"
@@ -88,7 +97,7 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
                 src={embedUrl}
                 className="absolute inset-0 w-full h-full border-0"
                 allow="autoplay"
-                title={document.title}
+                title={activeDocument.title}
               ></iframe>
             ) : (
               <div className="flex items-center justify-center h-full text-gray-400 p-8 text-center bg-white">
@@ -96,7 +105,7 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
                   <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
                     <FileText className="w-10 h-10 text-red-400" />
                   </div>
-                  <h1 className="text-xl font-bold text-gray-800 mb-3">{document.title}</h1>
+                  <h1 className="text-xl font-bold text-gray-800 mb-3">{activeDocument.title}</h1>
                   <p className="text-sm leading-relaxed">Rất tiếc! Không thể hiển thị nội dung do đường dẫn tài liệu không hợp lệ.</p>
                 </div>
               </div>
@@ -104,9 +113,10 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
           </div>
         </div>
 
-        {/* ĐÃ VÁ LỖI CSS: Chuyển lg:w-85 thành lg:w-[340px] để không bóp chết cột Iframe */}
+        {/* Cột phải */}
         <div className="w-full lg:w-[340px] flex flex-col gap-6 flex-shrink-0">
 
+          {/* Block: Thông tin chi tiết */}
           <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-6 flex items-center gap-2">
               <div className="w-8 h-8 bg-teal-50 rounded-lg flex items-center justify-center">
@@ -117,19 +127,19 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
             <div className="space-y-5">
               <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Tên tài liệu</p>
-                <p className="text-sm font-bold text-gray-900 leading-relaxed">{document.title}</p>
+                <p className="text-sm font-bold text-gray-900 leading-relaxed">{activeDocument.title}</p>
               </div>
 
               <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Môn học</p>
                 <p className="text-sm font-bold text-teal-700">
-                  {/* ĐÃ VÁ LỖI LOGIC: Ưu tiên in tên môn học thật trước khi in ID */}
-                  {document.subject_name || document.subject?.name || (document.subject_id ? `MÔN HỌC #${document.subject_id}` : 'Chưa phân loại')}
+                  {activeDocument.subject_name || activeDocument.subject?.name || (activeDocument.subject_id ? `MÔN HỌC #${activeDocument.subject_id}` : 'Chưa phân loại')}
                 </p>
               </div>
             </div>
           </div>
 
+          {/* Block: Tài liệu liên quan */}
           <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-6 flex items-center gap-2">
               <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
@@ -155,7 +165,8 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
                   return (
                     <div
                       key={doc.id}
-                      className="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 cursor-pointer transition-all group border border-transparent hover:border-gray-100"
+                      onClick={() => setActiveDocument(doc)}
+                      className="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 cursor-pointer transition-all group border border-transparent hover:border-teal-100"
                     >
                       <div className={`w-9 h-9 ${color} rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform`}>
                         <FileText className="w-4 h-4 text-white" />

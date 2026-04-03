@@ -12,18 +12,29 @@ interface UploadViewProps {
   subjects: any[];
 }
 
-export function UploadView({ 
-  showSuccessModal, 
-  setShowSuccessModal, 
+// Hàm tiện ích: Chuẩn hóa URL tự động thêm https:// nếu thiếu
+const normalizeUrl = (url: string) => {
+  if (!url) return '';
+  const trimmedUrl = url.trim();
+
+  if (!/^https?:\/\//i.test(trimmedUrl)) {
+    return `https://${trimmedUrl}`;
+  }
+  return trimmedUrl;
+};
+
+export function UploadView({
+  showSuccessModal,
+  setShowSuccessModal,
   onUploadSuccess,
   majors,
-  subjects 
+  subjects
 }: UploadViewProps) {
   // 1. KHOẢNG KHÔNG GIAN STATE (Trạng thái)
   const [title, setTitle] = useState('');
-  const [driveUrl, setDriveUrl] = useState(''); 
-  const [majorId, setMajorId] = useState<string>(''); 
-  const [subjectId, setSubjectId] = useState<string>(''); 
+  const [driveUrl, setDriveUrl] = useState('');
+  const [majorId, setMajorId] = useState<string>('');
+  const [subjectId, setSubjectId] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 2. KHOẢNG KHÔNG GIAN DỮ LIỆU PHÁI SINH (Derived State)
@@ -37,7 +48,7 @@ export function UploadView({
   // Effect 1: Tự động chọn Ngành học đầu tiên khi dữ liệu majors vừa tải về
   useEffect(() => {
     if (majors && majors.length > 0 && !majorId) {
-      const firstMajorId = majors[0].id || majors[0].major_id; 
+      const firstMajorId = majors[0].id || majors[0].major_id;
       if (firstMajorId) setMajorId(firstMajorId.toString());
     }
   }, [majors, majorId]);
@@ -48,7 +59,7 @@ export function UploadView({
       const firstSubjectId = displayedSubjects[0].subject_id || displayedSubjects[0].id;
       if (firstSubjectId) setSubjectId(firstSubjectId.toString());
     } else {
-      setSubjectId(''); 
+      setSubjectId('');
     }
   }, [displayedSubjects]);
 
@@ -62,21 +73,24 @@ export function UploadView({
 
     setIsSubmitting(true);
 
+    // Chuẩn hóa link do người dùng nhập vào trước khi đẩy lên API
+    const finalDriveUrl = normalizeUrl(driveUrl);
+
     try {
       const response = await axiosClient.post('/materials', {
         title: title,
-        drive_url: driveUrl, 
+        drive_url: finalDriveUrl, // Sử dụng link đã được làm sạch
         major_id: parseInt(majorId),
         subject_id: parseInt(subjectId)
       });
-      
+
       onUploadSuccess(response.data);
       setShowSuccessModal(true);
-      
+
       // Reset form
       setTitle('');
       setDriveUrl('');
-      
+
       setTimeout(() => setShowSuccessModal(false), 3000);
     } catch (error: any) {
       console.error('Lỗi upload API:', error);
@@ -125,25 +139,25 @@ export function UploadView({
               </div>
             </div>
 
-            {/* Link Google Drive */}
+            {/* Link Tài Liệu */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Link Google Drive <span className="text-red-500">*</span>
+                Link Tài Liệu (Drive, Dropbox, OneDrive...) <span className="text-red-500">*</span>
               </label>
               <p className="mt-2 text-[11px] text-orange-500 font-medium">
-  ⚠️ Lưu ý: Hãy đảm bảo file đã được chuyển sang chế độ "Bất kỳ ai có đường liên kết đều có thể xem" để tránh lỗi hiển thị.
-</p>
+                ⚠️ Lưu ý: Hãy đảm bảo file đã được cấp quyền "Bất kỳ ai có đường liên kết đều có thể xem" để tránh lỗi hiển thị.
+              </p>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <LinkIcon className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  type="url"
+                  type="text"
                   required
                   disabled={isSubmitting}
                   value={driveUrl}
                   onChange={(e) => setDriveUrl(e.target.value)}
-                  placeholder="https://drive.google.com/..."
+                  placeholder="VD: drive.google.com/..."
                   className="block w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all disabled:opacity-60"
                 />
               </div>
@@ -192,9 +206,8 @@ export function UploadView({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all ${
-                  isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
-                }`}
+                className={`w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
+                  }`}
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
