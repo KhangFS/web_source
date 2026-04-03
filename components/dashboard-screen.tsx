@@ -1,212 +1,168 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import axiosClient from '../lib/axiosClient';
+import { useState } from 'react';
+import { BookOpen, Filter, Search } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
-import { TopNavigation } from './top-navigation';
-import { FilterSidebar } from './filter-sidebar';
-import { FilterFAB } from './filter-fab';
-import { DocumentReader } from './document-reader';
-import { CommunityView } from './community-view';
-import { UploadView } from './upload-view';
-import { ContactView } from './contact-view';
-import { ProfileView } from './profile-view';
-import { LearningProgressView } from './learning-progress-view';
+// Type definitions for filter items
+type SubjectItem = {
+  subject_id?: string | number;
+  id?: string | number;
+  subject_name?: string;
+  name?: string;
+  major_ids?: number[];
+  [key: string]: any;
+};
 
-export function DashboardScreen() {
-  type ViewState = 'explore' | 'reading' | 'community' | 'upload' | 'contact' | 'profile' | 'progress';
+interface FilterContentProps {
+  subjects: SubjectItem[];
+  selectedSubject: number | null;
+  onSelectSubject: (id: number | null) => void;
+}
 
-  const [currentView, setCurrentView] = useState<ViewState>('explore');
-  const [selectedDocument, setSelectedDocument] = useState<any>(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+interface FilterSidebarProps extends FilterContentProps {
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
 
-  // Trạng thái mở menu lọc trên mobile
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterContentProps) => {
+  // State quản lý thanh tìm kiếm môn học
+  const [subjectQuery, setSubjectQuery] = useState('');
 
-  // DATA STATES
-  const [materials, setMaterials] = useState<any[]>([]);
-  const [subjects, setSubjects] = useState<any[]>([]);
-  // KHÔI PHỤC: Cần giữ majors lại để truyền cho UploadView (form đăng tài liệu)
-  const [majors, setMajors] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // 1. Lọc trùng lặp dữ liệu (Deduplicate)
+  const deduplicatedSubjects = Array.from(
+    new Map(
+      subjects.map(sub => {
+        const subjectId = sub.subject_id || sub.id;
+        return [subjectId, sub];
+      })
+    ).values()
+  );
 
-  // FILTER STATES (Đã dọn dẹp sạch sẽ selectedMajor)
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortOrder, setSortOrder] = useState<'newest' | 'a-z' | 'z-a'>('newest');
-  const [selectedSubject, setSelectedSubject] = useState<number | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [matRes, majRes, subRes] = await Promise.all([
-          axiosClient.get('/materials'),
-          axiosClient.get('/roadmap/majors'),
-          axiosClient.get('/roadmap/subjects')
-        ]);
-
-        setMaterials(matRes.data);
-        setMajors(majRes.data);
-        setSubjects(subRes.data);
-      } catch (error) {
-        console.error("Lỗi khi tải dữ liệu hệ thống:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // XỬ LÝ LỌC TÀI LIỆU (Đã gỡ bỏ hoàn toàn logic lọc theo Ngành học)
-  const processedMaterials = materials
-    .filter((mat) => {
-      const matchSearch = mat.title.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchSubject = selectedSubject ? mat.subject_id === selectedSubject : true;
-      return matchSearch && matchSubject;
-    })
-    .sort((a, b) => {
-      if (sortOrder === 'a-z') return a.title.localeCompare(b.title);
-      if (sortOrder === 'z-a') return b.title.localeCompare(a.title);
-      return b.id - a.id;
-    });
-
-  const handleDocumentClick = (doc: any) => {
-    setSelectedDocument(doc);
-    setCurrentView('reading');
-  };
-
-  const renderCurrentView = () => {
-    switch (currentView) {
-      case 'explore':
-        return (
-          <div className="w-full px-4 md:px-6 lg:px-0 py-4 md:py-6 flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
-            <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
-
-              {/* Desktop & Mobile Sidebar */}
-              {/* ĐÃ FIX: Sửa lỗi isMobileFilterOpen thành isFilterOpen */}
-              <FilterSidebar
-                subjects={subjects}
-                selectedSubject={selectedSubject}
-                onSelectSubject={setSelectedSubject}
-                isOpen={isFilterOpen}
-                onOpenChange={setIsFilterOpen}
-              />
-
-              {/* Main Content */}
-              <main className="w-full flex-1 min-w-0">
-                {/* Header with Results Count and Sort */}
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 md:gap-4 mb-4 md:mb-6">
-                  <h1 className="text-xl md:text-2xl font-bold text-gray-900">
-                    {processedMaterials.length} Kết quả
-                    {searchQuery && <span className="text-base md:text-lg"> cho "{searchQuery}"</span>}
-                  </h1>
-
-                  <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <label className="text-xs md:text-sm text-gray-600 font-medium whitespace-nowrap">Sắp xếp:</label>
-                    <select
-                      value={sortOrder}
-                      onChange={(e) => setSortOrder(e.target.value as any)}
-                      className="flex-1 sm:flex-none border border-gray-200 rounded-lg px-3 py-2 text-xs md:text-sm text-gray-800 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 bg-white transition-all min-h-[44px]"
-                    >
-                      <option value="newest">Mới nhất</option>
-                      <option value="a-z">Tên (A-Z)</option>
-                      <option value="z-a">Tên (Z-A)</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Loading State */}
-                {isLoading ? (
-                  <div className="text-center py-8 md:py-12 bg-white p-6 rounded-lg md:rounded-2xl border border-gray-100 shadow-sm animate-pulse">
-                    <div className="text-gray-500 text-sm md:text-base">Đang đồng bộ dữ liệu với máy chủ...</div>
-                  </div>
-                ) : processedMaterials.length === 0 ? (
-                  /* Empty State */
-                  <div className="text-center py-8 md:py-12 bg-white rounded-lg md:rounded-2xl border border-dashed border-gray-300 shadow-sm">
-                    <div className="text-3xl md:text-4xl mb-3">📭</div>
-                    <p className="text-sm md:text-base text-gray-500 font-medium px-4">Không có tài liệu nào phù hợp với bộ lọc này.</p>
-                  </div>
-                ) : (
-                  /* Document Grid */
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
-                    {processedMaterials.map((mat) => (
-                      <div
-                        key={mat.id}
-                        onClick={() => handleDocumentClick(mat)}
-                        className="p-4 md:p-5 bg-white rounded-lg md:rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:border-teal-100 hover:-translate-y-1 active:scale-95 transition-all duration-200 flex flex-col justify-between group min-h-[200px]"
-                      >
-                        <div className="min-w-0">
-                          <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-2 md:mb-3 line-clamp-2 group-hover:text-teal-700 transition-colors">
-                            {mat.title}
-                          </h3>
-                          <p className="text-xs md:text-sm text-gray-500 mb-3 md:mb-4 bg-gray-50 inline-block px-2 py-1 rounded-md">
-                            Môn học ID: {mat.subject_id}
-                          </p>
-                        </div>
-                        <a
-                          href={mat.drive_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full py-2 md:py-2.5 bg-teal-50 text-teal-700 text-xs md:text-sm font-semibold rounded-lg md:rounded-xl hover:bg-teal-100 hover:shadow-sm transition-all inline-block text-center mt-auto min-h-[44px] flex items-center justify-center"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Mở Drive
-                        </a>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </main>
-            </div>
-          </div>
-        );
-      case 'reading':
-        return <DocumentReader onBack={() => setCurrentView('explore')} document={selectedDocument} />;
-      case 'community':
-        return <CommunityView />;
-      case 'upload':
-        return (
-          <UploadView
-            showSuccessModal={showSuccessModal}
-            setShowSuccessModal={setShowSuccessModal}
-            onUploadSuccess={(newDoc: any) => {
-              setMaterials(prevMaterials => [newDoc, ...prevMaterials]);
-              setCurrentView('explore');
-            }}
-            majors={majors}
-            subjects={subjects}
-          />
-        );
-      case 'contact':
-        return <ContactView />;
-      case 'profile':
-        return <ProfileView />;
-      case 'progress':
-        return <LearningProgressView />;
-      default:
-        return null;
-    }
-  };
+  // 2. Lọc theo từ khóa tìm kiếm (Local Search)
+  const filteredSubjects = deduplicatedSubjects.filter(sub => {
+    if (!subjectQuery.trim()) return true;
+    const subjectName = (sub.subject_name || sub.name || '').toLowerCase();
+    return subjectName.includes(subjectQuery.toLowerCase());
+  });
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <TopNavigation
-        currentView={currentView}
-        onNavigate={setCurrentView}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        showSearch={currentView === 'explore'}
-      />
+    <>
+      <div className="space-y-6 md:space-y-8">
+        {/* Filter Title */}
+        <div className="hidden lg:flex items-center gap-2">
+          <div className="w-8 h-8 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Filter className="w-4 h-4 text-teal-600" />
+          </div>
+          <h2 className="text-lg md:text-xl font-bold text-gray-900">Bộ lọc</h2>
+        </div>
 
-      {/* Mobile Filter FAB - Only shown on small screens during explore view */}
-      {currentView === 'explore' && (
-        <FilterFAB
-          onClick={() => setIsFilterOpen(true)}
-          isOpen={isFilterOpen}
-        />
-      )}
+        {/* SUBJECTS SECTION */}
+        <div className="flex flex-col h-full">
+          <div className="flex items-center gap-2 mb-3 md:mb-4">
+            <BookOpen className="w-4 h-4 text-gray-400 flex-shrink-0" />
+            <h3 className="text-xs md:text-sm font-bold text-gray-900 uppercase tracking-widest">Môn học</h3>
+          </div>
 
-      {renderCurrentView()}
-    </div>
+          {/* THANH TÌM KIẾM MÔN HỌC */}
+          <div className="relative mb-3">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Tìm tên môn học..."
+              value={subjectQuery}
+              onChange={(e) => setSubjectQuery(e.target.value)}
+              className="block w-full pl-9 pr-3 py-2 md:py-2.5 border border-gray-200 rounded-xl md:rounded-2xl text-xs md:text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition-all bg-gray-50 hover:bg-white focus:bg-white"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto pr-2 pb-4">
+            <button
+              onClick={() => onSelectSubject(null)}
+              className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${selectedSubject === null
+                  ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
+                  : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                }`}
+            >
+              Tất cả môn học
+            </button>
+
+            {filteredSubjects.length > 0 ? (
+              filteredSubjects.map((sub: SubjectItem) => {
+                const subjectId = sub.subject_id || sub.id;
+                const subjectName = sub.subject_name || sub.name;
+
+                if (!subjectId) return null;
+
+                return (
+                  <button
+                    key={`subject-${subjectId}`}
+                    onClick={() => onSelectSubject(subjectId as number)}
+                    className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${selectedSubject === subjectId
+                        ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
+                        : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      }`}
+                  >
+                    {subjectName}
+                  </button>
+                );
+              })
+            ) : (
+              <div className="text-center py-6 px-4 bg-gray-50 rounded-xl border border-dashed border-gray-200 mt-2">
+                <p className="text-xs md:text-sm text-gray-500 font-medium">
+                  Không tìm thấy môn học nào.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export function FilterSidebar({
+  subjects,
+  selectedSubject,
+  onSelectSubject,
+  isOpen = false,
+  onOpenChange,
+}: FilterSidebarProps) {
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-[68px] h-[calc(100vh-68px)] overflow-y-auto border-r border-gray-100 bg-white pr-2">
+        <div className="p-6 h-full">
+          <FilterContent
+            subjects={subjects}
+            selectedSubject={selectedSubject}
+            onSelectSubject={onSelectSubject}
+          />
+        </div>
+      </aside>
+
+      {/* Mobile Drawer */}
+      <Sheet open={isOpen} onOpenChange={onOpenChange}>
+        <SheetContent side="left" className="w-full sm:w-3/4 max-w-xs md:hidden flex flex-col">
+          <SheetHeader className="mb-4 flex-shrink-0">
+            <SheetTitle className="text-gray-900">Bộ lọc</SheetTitle>
+          </SheetHeader>
+          <div className="overflow-y-hidden flex-1 h-full pr-1">
+            <FilterContent
+              subjects={subjects}
+              selectedSubject={selectedSubject}
+              onSelectSubject={onSelectSubject}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
