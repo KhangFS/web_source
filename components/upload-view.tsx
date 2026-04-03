@@ -30,7 +30,7 @@ export function UploadView({
   // ĐÃ TỐI ƯU: Dùng useMemo để React KHÔNG tạo ra mảng mới sau mỗi lần gõ phím, diệt tận gốc lỗi "Ghost Click"
   const displayedSubjects = useMemo(() => {
     if (!majorId) return subjects;
-    return subjects.filter((s: any) => s.major_id === parseInt(majorId));
+    return subjects.filter((s: any) => (s.major_ids ?? []).includes(parseInt(majorId)));
   }, [majorId, subjects]);
 
   // 3. KHOẢNG KHÔNG GIAN HIỆU ỨNG PHỤ (Side Effects)
