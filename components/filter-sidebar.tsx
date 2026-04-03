@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutGrid, BookOpen, Filter } from 'lucide-react';
+import { BookOpen, Filter } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -15,7 +15,6 @@ type SubjectItem = {
   subject_name?: string;
   name?: string;
   major_ids?: number[];
-  major_id?: number;
   [key: string]: any;
 };
 
@@ -59,18 +58,18 @@ const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterCon
             <h3 className="text-xs md:text-sm font-bold text-gray-900 uppercase tracking-widest">Môn học</h3>
           </div>
 
-          <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+          {/* Tăng max-h lên một chút và thêm pr-2 để thanh cuộn không đè vào nút */}
+          <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-2">
             <button
               onClick={() => onSelectSubject(null)}
-              className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${
-                selectedSubject === null
+              className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${selectedSubject === null
                   ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
                   : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-              }`}
+                }`}
             >
               Tất cả môn học
             </button>
-            
+
             {deduplicatedSubjects.length > 0 ? (
               deduplicatedSubjects.map((sub: SubjectItem) => {
                 const subjectId = sub.subject_id || sub.id;
@@ -83,11 +82,10 @@ const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterCon
                   <button
                     key={`subject-${subjectId}`}
                     onClick={() => onSelectSubject(subjectId as number)}
-                    className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${
-                      selectedSubject === subjectId
+                    className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${selectedSubject === subjectId
                         ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
                         : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                    }`}
+                      }`}
                   >
                     {subjectName}
                   </button>
@@ -95,7 +93,7 @@ const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterCon
               })
             ) : (
               <p className="text-xs text-gray-500 italic px-3 md:px-4 py-2">
-                Hãy chọn một ngành để xem danh sách môn học.
+                Không có dữ liệu môn học.
               </p>
             )}
           </div>
@@ -106,10 +104,7 @@ const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterCon
 };
 
 export function FilterSidebar({
-  majors,
   subjects,
-  selectedMajor,
-  onSelectMajor,
   selectedSubject,
   onSelectSubject,
   isOpen = false,
@@ -121,10 +116,7 @@ export function FilterSidebar({
       <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-[68px] h-[calc(100vh-68px)] overflow-y-auto border-r border-gray-100 bg-white pr-2">
         <div className="p-6">
           <FilterContent
-            majors={majors}
             subjects={subjects}
-            selectedMajor={selectedMajor}
-            onSelectMajor={onSelectMajor}
             selectedSubject={selectedSubject}
             onSelectSubject={onSelectSubject}
           />
@@ -137,12 +129,9 @@ export function FilterSidebar({
           <SheetHeader className="mb-6">
             <SheetTitle className="text-gray-900">Bộ lọc</SheetTitle>
           </SheetHeader>
-          <div className="overflow-y-auto max-h-[calc(100vh-100px)]">
+          <div className="overflow-y-auto max-h-[calc(100vh-100px)] pr-2">
             <FilterContent
-              majors={majors}
               subjects={subjects}
-              selectedMajor={selectedMajor}
-              onSelectMajor={onSelectMajor}
               selectedSubject={selectedSubject}
               onSelectSubject={onSelectSubject}
             />
