@@ -20,8 +20,8 @@ export function DashboardScreen() {
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
-  const [materials, setMaterials] = useState<any[]>([]); 
+
+  const [materials, setMaterials] = useState<any[]>([]);
   const [majors, setMajors] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +39,7 @@ export function DashboardScreen() {
           axiosClient.get('/roadmap/majors'),
           axiosClient.get('/roadmap/subjects')
         ]);
-        
+
         setMaterials(matRes.data);
         setMajors(majRes.data);
         setSubjects(subRes.data);
@@ -53,8 +53,8 @@ export function DashboardScreen() {
     fetchData();
   }, []);
 
-  const displayedSubjects = selectedMajor 
-    ? subjects.filter(sub => (sub.major_ids ?? []).includes(selectedMajor as number)) 
+  const displayedSubjects = selectedMajor
+    ? subjects.filter(sub => (sub.major_ids ?? []).includes(selectedMajor as number))
     : subjects;
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export function DashboardScreen() {
     .sort((a, b) => {
       if (sortOrder === 'a-z') return a.title.localeCompare(b.title);
       if (sortOrder === 'z-a') return b.title.localeCompare(a.title);
-      return b.id - a.id; 
+      return b.id - a.id;
     });
 
   const handleDocumentClick = (doc: any) => {
@@ -88,17 +88,14 @@ export function DashboardScreen() {
           <div className="w-full px-4 md:px-6 lg:px-0 py-4 md:py-6 flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
             <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
               {/* Desktop Sidebar - Visible on lg+ */}
-              <FilterSidebar 
-                majors={majors}
+              <FilterSidebar
                 subjects={displayedSubjects}
-                selectedMajor={selectedMajor}
-                onSelectMajor={setSelectedMajor}
                 selectedSubject={selectedSubject}
                 onSelectSubject={setSelectedSubject}
-                isOpen={isFilterOpen}
-                onOpenChange={setIsFilterOpen}
+                isOpen={isMobileFilterOpen}
+                onOpenChange={setIsMobileFilterOpen}
               />
-              
+
               {/* Main Content */}
               <main className="w-full flex-1 min-w-0">
                 {/* Header with Results Count and Sort */}
@@ -107,11 +104,11 @@ export function DashboardScreen() {
                     {processedMaterials.length} Kết quả
                     {searchQuery && <span className="text-base md:text-lg"> cho "{searchQuery}"</span>}
                   </h1>
-                  
+
                   <div className="flex items-center gap-2 w-full sm:w-auto">
                     <label className="text-xs md:text-sm text-gray-600 font-medium whitespace-nowrap">Sắp xếp:</label>
-                    <select 
-                      value={sortOrder} 
+                    <select
+                      value={sortOrder}
                       onChange={(e) => setSortOrder(e.target.value as any)}
                       className="flex-1 sm:flex-none border border-gray-200 rounded-lg px-3 py-2 text-xs md:text-sm text-gray-800 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 bg-white transition-all min-h-[44px]"
                     >
@@ -121,7 +118,7 @@ export function DashboardScreen() {
                     </select>
                   </div>
                 </div>
-                
+
                 {/* Loading State */}
                 {isLoading ? (
                   <div className="text-center py-8 md:py-12 bg-white p-6 rounded-lg md:rounded-2xl border border-gray-100 shadow-sm animate-pulse">
@@ -137,9 +134,9 @@ export function DashboardScreen() {
                   /* Document Grid - List View on Mobile, Grid on md+ */
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
                     {processedMaterials.map((mat) => (
-                      <div 
-                        key={mat.id} 
-                        onClick={() => handleDocumentClick(mat)} 
+                      <div
+                        key={mat.id}
+                        onClick={() => handleDocumentClick(mat)}
                         className="p-4 md:p-5 bg-white rounded-lg md:rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:border-teal-100 hover:-translate-y-1 active:scale-95 transition-all duration-200 flex flex-col justify-between group min-h-[200px]"
                       >
                         <div className="min-w-0">
@@ -150,12 +147,12 @@ export function DashboardScreen() {
                             Môn học ID: {mat.subject_id}
                           </p>
                         </div>
-                        <a 
-                          href={mat.drive_url} 
-                          target="_blank" 
+                        <a
+                          href={mat.drive_url}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="w-full py-2 md:py-2.5 bg-teal-50 text-teal-700 text-xs md:text-sm font-semibold rounded-lg md:rounded-xl hover:bg-teal-100 hover:shadow-sm transition-all inline-block text-center mt-auto min-h-[44px] flex items-center justify-center"
-                          onClick={(e) => e.stopPropagation()} 
+                          onClick={(e) => e.stopPropagation()}
                         >
                           Mở Drive
                         </a>
@@ -173,9 +170,9 @@ export function DashboardScreen() {
         return <CommunityView />;
       case 'upload':
         return (
-          <UploadView 
-            showSuccessModal={showSuccessModal} 
-            setShowSuccessModal={setShowSuccessModal} 
+          <UploadView
+            showSuccessModal={showSuccessModal}
+            setShowSuccessModal={setShowSuccessModal}
             onUploadSuccess={(newDoc: any) => {
               setMaterials(prevMaterials => [newDoc, ...prevMaterials]);
               setCurrentView('explore');
@@ -197,22 +194,22 @@ export function DashboardScreen() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <TopNavigation 
-        currentView={currentView} 
-        onNavigate={setCurrentView} 
+      <TopNavigation
+        currentView={currentView}
+        onNavigate={setCurrentView}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        showSearch={currentView === 'explore'} 
+        showSearch={currentView === 'explore'}
       />
-      
+
       {/* Mobile Filter FAB - Only shown on small screens during explore view */}
       {currentView === 'explore' && (
-        <FilterFAB 
-          onClick={() => setIsFilterOpen(true)} 
+        <FilterFAB
+          onClick={() => setIsFilterOpen(true)}
           isOpen={isFilterOpen}
         />
       )}
-      
+
       {renderCurrentView()}
     </div>
   );
