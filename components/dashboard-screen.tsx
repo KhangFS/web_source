@@ -22,13 +22,11 @@ export function DashboardScreen() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [materials, setMaterials] = useState<any[]>([]);
-  const [majors, setMajors] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'a-z' | 'z-a'>('newest');
-  const [selectedMajor, setSelectedMajor] = useState<number | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<number | null>(null);
 
   useEffect(() => {
