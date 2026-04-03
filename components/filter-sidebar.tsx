@@ -73,10 +73,13 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
             const majorId = major.id || major.major_id;
             const majorName = major.name || major.major_name;
 
+            // Skip items without a valid ID
+            if (!majorId) return null;
+
             return (
               <button
                 key={`major-${majorId}`}
-                onClick={() => onSelectMajor(majorId)}
+                onClick={() => onSelectMajor(majorId as number)}
                 className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center whitespace-nowrap ${
                   selectedMajor === majorId
                     ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
@@ -114,10 +117,13 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
               const subjectId = sub.subject_id || sub.id;
               const subjectName = sub.subject_name || sub.name;
 
+              // Skip items without a valid ID
+              if (!subjectId) return null;
+
               return (
                 <button
                   key={`subject-${subjectId}`}
-                  onClick={() => onSelectSubject(subjectId)}
+                  onClick={() => onSelectSubject(subjectId as number)}
                   className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center whitespace-nowrap ${
                     selectedSubject === subjectId
                       ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
