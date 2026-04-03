@@ -19,12 +19,18 @@ export function DashboardScreen() {
   const [currentView, setCurrentView] = useState<ViewState>('explore');
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  // Trạng thái mở menu lọc trên mobile
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  // DATA STATES
   const [materials, setMaterials] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
+  // KHÔI PHỤC: Cần giữ majors lại để truyền cho UploadView (form đăng tài liệu)
+  const [majors, setMajors] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // FILTER STATES (Đã dọn dẹp sạch sẽ selectedMajor)
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'a-z' | 'z-a'>('newest');
   const [selectedSubject, setSelectedSubject] = useState<number | null>(null);
@@ -51,22 +57,12 @@ export function DashboardScreen() {
     fetchData();
   }, []);
 
-  const displayedSubjects = selectedMajor
-    ? subjects.filter(sub => (sub.major_ids ?? []).includes(selectedMajor as number))
-    : subjects;
-
-  useEffect(() => {
-    if (selectedSubject && !displayedSubjects.find(s => s.subject_id === selectedSubject)) {
-      setSelectedSubject(null);
-    }
-  }, [selectedMajor, selectedSubject, displayedSubjects]);
-
+  // XỬ LÝ LỌC TÀI LIỆU (Đã gỡ bỏ hoàn toàn logic lọc theo Ngành học)
   const processedMaterials = materials
     .filter((mat) => {
       const matchSearch = mat.title.toLowerCase().includes(searchQuery.toLowerCase());
       const matchSubject = selectedSubject ? mat.subject_id === selectedSubject : true;
-      const matchMajor = selectedMajor ? (mat.major_ids ?? []).includes(selectedMajor) : true;
-      return matchSearch && matchSubject && matchMajor;
+      return matchSearch && matchSubject;
     })
     .sort((a, b) => {
       if (sortOrder === 'a-z') return a.title.localeCompare(b.title);
@@ -85,13 +81,15 @@ export function DashboardScreen() {
         return (
           <div className="w-full px-4 md:px-6 lg:px-0 py-4 md:py-6 flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
             <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
-              {/* Desktop Sidebar - Visible on lg+ */}
+
+              {/* Desktop & Mobile Sidebar */}
+              {/* ĐÃ FIX: Sửa lỗi isMobileFilterOpen thành isFilterOpen */}
               <FilterSidebar
-                subjects={displayedSubjects}
+                subjects={subjects}
                 selectedSubject={selectedSubject}
                 onSelectSubject={setSelectedSubject}
-                isOpen={isMobileFilterOpen}
-                onOpenChange={setIsMobileFilterOpen}
+                isOpen={isFilterOpen}
+                onOpenChange={setIsFilterOpen}
               />
 
               {/* Main Content */}
@@ -129,7 +127,7 @@ export function DashboardScreen() {
                     <p className="text-sm md:text-base text-gray-500 font-medium px-4">Không có tài liệu nào phù hợp với bộ lọc này.</p>
                   </div>
                 ) : (
-                  /* Document Grid - List View on Mobile, Grid on md+ */
+                  /* Document Grid */
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
                     {processedMaterials.map((mat) => (
                       <div
