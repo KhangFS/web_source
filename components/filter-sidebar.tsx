@@ -9,14 +9,6 @@ import {
 } from '@/components/ui/sheet';
 
 // Type definitions for filter items
-type MajorItem = {
-  id?: string | number;
-  major_id?: string | number;
-  name?: string;
-  major_name?: string;
-  [key: string]: any;
-};
-
 type SubjectItem = {
   subject_id?: string | number;
   id?: string | number;
@@ -28,10 +20,7 @@ type SubjectItem = {
 };
 
 interface FilterContentProps {
-  majors: MajorItem[];
   subjects: SubjectItem[];
-  selectedMajor: number | null;
-  onSelectMajor: (id: number | null) => void;
   selectedSubject: number | null;
   onSelectSubject: (id: number | null) => void;
 }
@@ -41,7 +30,7 @@ interface FilterSidebarProps extends FilterContentProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selectedSubject, onSelectSubject }: FilterContentProps) => {
+const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterContentProps) => {
   // Deduplicate subjects array based on subject_id or id
   const deduplicatedSubjects = Array.from(
     new Map(
@@ -61,49 +50,6 @@ const FilterContent = ({ majors, subjects, selectedMajor, onSelectMajor, selecte
             <Filter className="w-4 h-4 text-teal-600" />
           </div>
           <h2 className="text-lg md:text-xl font-bold text-gray-900">Bộ lọc</h2>
-        </div>
-
-        {/* MAJORS SECTION */}
-        <div>
-          <div className="flex items-center gap-2 mb-3 md:mb-4">
-            <LayoutGrid className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            <h3 className="text-xs md:text-sm font-bold text-gray-900 uppercase tracking-widest">Ngành học</h3>
-          </div>
-          
-          <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto">
-            <button
-              onClick={() => onSelectMajor(null)}
-              className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${
-                selectedMajor === null
-                  ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
-                  : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-              }`}
-            >
-              Tất cả ngành
-            </button>
-            
-            {majors.map((major: MajorItem) => {
-              const majorId = major.id || major.major_id;
-              const majorName = major.name || major.major_name;
-
-              // Skip items without a valid ID
-              if (!majorId) return null;
-
-              return (
-                <button
-                  key={`major-${majorId}`}
-                  onClick={() => onSelectMajor(majorId as number)}
-                  className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${
-                    selectedMajor === majorId
-                      ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
-                      : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
-                >
-                  {majorName}
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* SUBJECTS SECTION */}
