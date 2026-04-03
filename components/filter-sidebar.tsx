@@ -22,6 +22,8 @@ type SubjectItem = {
   id?: string | number;
   subject_name?: string;
   name?: string;
+  major_ids?: number[];
+  major_id?: number;
   [key: string]: any;
 };
 

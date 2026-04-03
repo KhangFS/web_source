@@ -54,7 +54,7 @@ export function DashboardScreen() {
   }, []);
 
   const displayedSubjects = selectedMajor 
-    ? subjects.filter(sub => sub.major_id === selectedMajor) 
+    ? subjects.filter(sub => (sub.major_ids ?? []).includes(selectedMajor as number)) 
     : subjects;
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function DashboardScreen() {
     .filter((mat) => {
       const matchSearch = mat.title.toLowerCase().includes(searchQuery.toLowerCase());
       const matchSubject = selectedSubject ? mat.subject_id === selectedSubject : true;
-      const matchMajor = selectedMajor ? mat.major_id === selectedMajor : true;
+      const matchMajor = selectedMajor ? (mat.major_ids ?? []).includes(selectedMajor) : true;
       return matchSearch && matchSubject && matchMajor;
     })
     .sort((a, b) => {
