@@ -149,7 +149,7 @@ export function DashboardScreen() {
                           className="w-full py-2 md:py-2.5 bg-teal-50 text-teal-700 text-xs md:text-sm font-semibold rounded-lg md:rounded-xl hover:bg-teal-100 hover:shadow-sm transition-all inline-block text-center mt-auto min-h-[44px] flex items-center justify-center"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          Mở Drive
+                          Mở Link
                         </a>
                       </div>
                     ))}

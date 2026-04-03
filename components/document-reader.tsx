@@ -6,7 +6,7 @@ import axiosClient from '../lib/axiosClient';
 
 interface DocumentReaderProps {
   onBack: () => void;
-  document: any; 
+  document: any;
 }
 
 export function DocumentReader({ onBack, document }: DocumentReaderProps) {
@@ -15,7 +15,7 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
 
   useEffect(() => {
     if (!document?.id) return;
-    
+
     const fetchRelated = async () => {
       try {
         const res = await axiosClient.get(`/materials/${document.id}/related`);
@@ -26,7 +26,7 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
         setIsLoadingRelated(false);
       }
     };
-    
+
     fetchRelated();
   }, [document?.id]);
 
@@ -54,7 +54,7 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
       </button>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        
+
         {/* Cột trái - Trình xem PDF (Đã thoát kiếp 0px) */}
         <div className="flex-1 bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200 flex flex-col h-[85vh]">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white">
@@ -68,11 +68,11 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
             </div>
             <div className="flex items-center gap-4">
               <div className="hidden md:block text-[10px] text-gray-400 font-medium uppercase tracking-widest bg-gray-50 px-2 py-1 rounded">
-                Xem trực tuyến
+                Không preview được? Xem trực tuyến
               </div>
-              <a 
-                href={document.drive_url} 
-                target="_blank" 
+              <a
+                href={document.drive_url}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-teal-600 transition-colors"
                 title="Mở trong tab mới"
@@ -84,29 +84,29 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
 
           <div className="w-full bg-gray-100 flex-1 relative">
             {embedUrl ? (
-               <iframe 
-                 src={embedUrl} 
-                 className="absolute inset-0 w-full h-full border-0"
-                 allow="autoplay"
-                 title={document.title}
-               ></iframe>
+              <iframe
+                src={embedUrl}
+                className="absolute inset-0 w-full h-full border-0"
+                allow="autoplay"
+                title={document.title}
+              ></iframe>
             ) : (
-               <div className="flex items-center justify-center h-full text-gray-400 p-8 text-center bg-white">
-                 <div className="max-w-md">
-                   <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                     <FileText className="w-10 h-10 text-red-400" />
-                   </div>
-                   <h1 className="text-xl font-bold text-gray-800 mb-3">{document.title}</h1>
-                   <p className="text-sm leading-relaxed">Rất tiếc! Không thể hiển thị nội dung do đường dẫn tài liệu không hợp lệ.</p>
-                 </div>
-               </div>
+              <div className="flex items-center justify-center h-full text-gray-400 p-8 text-center bg-white">
+                <div className="max-w-md">
+                  <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <FileText className="w-10 h-10 text-red-400" />
+                  </div>
+                  <h1 className="text-xl font-bold text-gray-800 mb-3">{document.title}</h1>
+                  <p className="text-sm leading-relaxed">Rất tiếc! Không thể hiển thị nội dung do đường dẫn tài liệu không hợp lệ.</p>
+                </div>
+              </div>
             )}
           </div>
         </div>
 
         {/* ĐÃ VÁ LỖI CSS: Chuyển lg:w-85 thành lg:w-[340px] để không bóp chết cột Iframe */}
         <div className="w-full lg:w-[340px] flex flex-col gap-6 flex-shrink-0">
-          
+
           <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-6 flex items-center gap-2">
               <div className="w-8 h-8 bg-teal-50 rounded-lg flex items-center justify-center">
@@ -119,7 +119,7 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Tên tài liệu</p>
                 <p className="text-sm font-bold text-gray-900 leading-relaxed">{document.title}</p>
               </div>
-              
+
               <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Môn học</p>
                 <p className="text-sm font-bold text-teal-700">
@@ -138,20 +138,20 @@ export function DocumentReader({ onBack, document }: DocumentReaderProps) {
               Tài liệu liên quan
             </h3>
             {isLoadingRelated ? (
-               <div className="flex flex-col items-center justify-center py-10 gap-3">
-                 <div className="w-6 h-6 border-2 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-                 <p className="text-xs text-gray-400 font-medium">Đang tìm tài liệu cùng môn...</p>
-               </div>
+              <div className="flex flex-col items-center justify-center py-10 gap-3">
+                <div className="w-6 h-6 border-2 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-xs text-gray-400 font-medium">Đang tìm tài liệu cùng môn...</p>
+              </div>
             ) : relatedDocs.length === 0 ? (
-               <div className="text-sm text-gray-400 text-center py-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                 Chưa có tài liệu nào khác cùng môn học này.
-               </div>
+              <div className="text-sm text-gray-400 text-center py-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                Chưa có tài liệu nào khác cùng môn học này.
+              </div>
             ) : (
               <div className="space-y-3">
                 {relatedDocs.map((doc, index) => {
                   const colors = ['bg-orange-400', 'bg-pink-500', 'bg-teal-500', 'bg-blue-400'];
                   const color = colors[index % colors.length];
-                  
+
                   return (
                     <div
                       key={doc.id}
