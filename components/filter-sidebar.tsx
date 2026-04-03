@@ -1,6 +1,7 @@
 'use client';
 
-import { BookOpen, Filter } from 'lucide-react';
+import { useState } from 'react';
+import { BookOpen, Filter, Search } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -30,7 +31,10 @@ interface FilterSidebarProps extends FilterContentProps {
 }
 
 const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterContentProps) => {
-  // Deduplicate subjects array based on subject_id or id
+  // State quản lý thanh tìm kiếm môn học
+  const [subjectQuery, setSubjectQuery] = useState('');
+
+  // 1. Lọc trùng lặp dữ liệu (Deduplicate)
   const deduplicatedSubjects = Array.from(
     new Map(
       subjects.map(sub => {
@@ -39,6 +43,13 @@ const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterCon
       })
     ).values()
   );
+
+  // 2. Lọc theo từ khóa tìm kiếm (Local Search)
+  const filteredSubjects = deduplicatedSubjects.filter(sub => {
+    if (!subjectQuery.trim()) return true;
+    const subjectName = (sub.subject_name || sub.name || '').toLowerCase();
+    return subjectName.includes(subjectQuery.toLowerCase());
+  });
 
   return (
     <>
@@ -52,26 +63,40 @@ const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterCon
         </div>
 
         {/* SUBJECTS SECTION */}
-        <div>
+        <div className="flex flex-col h-full">
           <div className="flex items-center gap-2 mb-3 md:mb-4">
             <BookOpen className="w-4 h-4 text-gray-400 flex-shrink-0" />
             <h3 className="text-xs md:text-sm font-bold text-gray-900 uppercase tracking-widest">Môn học</h3>
           </div>
 
+          {/* THANH TÌM KIẾM MÔN HỌC */}
+          <div className="relative mb-3">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Tìm tên môn học..."
+              value={subjectQuery}
+              onChange={(e) => setSubjectQuery(e.target.value)}
+              className="block w-full pl-9 pr-3 py-2 md:py-2.5 border border-gray-200 rounded-xl md:rounded-2xl text-xs md:text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition-all bg-gray-50 hover:bg-white focus:bg-white"
+            />
+          </div>
+
           {/* Tăng max-h lên một chút và thêm pr-2 để thanh cuộn không đè vào nút */}
-          <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-2">
+          <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-2 pb-4">
             <button
               onClick={() => onSelectSubject(null)}
               className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${selectedSubject === null
-                  ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
-                  : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
+                : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
             >
               Tất cả môn học
             </button>
 
-            {deduplicatedSubjects.length > 0 ? (
-              deduplicatedSubjects.map((sub: SubjectItem) => {
+            {filteredSubjects.length > 0 ? (
+              filteredSubjects.map((sub: SubjectItem) => {
                 const subjectId = sub.subject_id || sub.id;
                 const subjectName = sub.subject_name || sub.name;
 
@@ -83,8 +108,8 @@ const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterCon
                     key={`subject-${subjectId}`}
                     onClick={() => onSelectSubject(subjectId as number)}
                     className={`px-3 md:px-4 py-2 md:py-3 text-left text-xs md:text-sm rounded-xl md:rounded-2xl font-bold transition-all duration-200 border-2 flex-shrink-0 min-h-[44px] flex items-center ${selectedSubject === subjectId
-                        ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
-                        : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      ? 'border-teal-500 text-teal-700 bg-teal-50 shadow-sm'
+                      : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                       }`}
                   >
                     {subjectName}
@@ -92,9 +117,11 @@ const FilterContent = ({ subjects, selectedSubject, onSelectSubject }: FilterCon
                 );
               })
             ) : (
-              <p className="text-xs text-gray-500 italic px-3 md:px-4 py-2">
-                Không có dữ liệu môn học.
-              </p>
+              <div className="text-center py-6 px-4 bg-gray-50 rounded-xl border border-dashed border-gray-200 mt-2">
+                <p className="text-xs md:text-sm text-gray-500 font-medium">
+                  Không tìm thấy môn học nào.
+                </p>
+              </div>
             )}
           </div>
         </div>
