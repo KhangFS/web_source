@@ -19,14 +19,11 @@ interface DocumentGridProps {
 
 export function DocumentGrid({ materials, subjects, onDocumentClick }: DocumentGridProps) {
 
-  // Hàm Fallback: Chặn đứng lỗi "ID: 114" bằng cách ép kiểu an toàn
+  // Hàm Fallback: Dò tìm tên môn học an toàn
   const getFallbackSubjectName = (subjectId: any) => {
     if (!subjectId) return 'Tài liệu chung';
-    // Ép kiểu cả 2 về String để so sánh an toàn tuyệt đối
     const subject = subjects.find(s => String(s.subject_id || s.id) === String(subjectId));
-
-    // ĐÃ SỬA: Xóa bỏ việc hiển thị ID thô kệch. Trả về chữ "Môn học" chung chung cho gọn gàng.
-    return subject ? (subject.subject_name || subject.name) : 'Môn học';
+    return subject ? (subject.subject_name || subject.name) : 'Chưa cập nhật';
   };
 
   // Màn hình trống
@@ -49,16 +46,20 @@ export function DocumentGrid({ materials, subjects, onDocumentClick }: DocumentG
       {/* Lưới Tài liệu */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
         {materials.map((doc, index) => {
-          // ƯU TIÊN 1: Lấy tên môn học Backend đã JOIN sẵn (doc.subject_name)
-          // ƯU TIÊN 2: Lấy từ object lồng nhau (doc.subject.name)
-          // DỰ PHÒNG: Tự đi dò tìm trong list subjects Frontend (getFallbackSubjectName)
-          const displaySubjectName = doc.subject_name || doc.subject?.name || getFallbackSubjectName(doc.subject_id);
+          // Bước 1: Lấy tên môn học thô (Raw Subject Name)
+          const rawSubjectName = doc.subject_name || doc.subject?.name || getFallbackSubjectName(doc.subject_id);
+
+          // Bước 2: Ghép tiền tố thông minh. 
+          // Nếu là 'Tài liệu chung' thì giữ nguyên, ngược lại thì thêm 'Môn học: ' ở trước.
+          const finalSubtitle = rawSubjectName === 'Tài liệu chung'
+            ? 'Tài liệu chung'
+            : `Môn học: ${rawSubjectName}`;
 
           return (
             <DocumentCard
               key={`doc-${doc.id}`}
               title={doc.title}
-              subtitle={displaySubjectName}
+              subtitle={finalSubtitle}
               gradient={PROFESSIONAL_GRADIENTS[index % PROFESSIONAL_GRADIENTS.length]}
               onClick={() => onDocumentClick(doc)}
             />
