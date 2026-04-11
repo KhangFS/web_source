@@ -47,7 +47,6 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
           setIsLoading(false);
           return;
         }
-        // Double check ở FE phòng trường hợp user can thiệp DOM bật nút Submit
         if (password.length < 6) {
           alert('Mật khẩu quá ngắn!');
           setIsLoading(false);
@@ -91,14 +90,14 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
 
       <header className="relative z-10 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4 grid grid-cols-3 items-center">
-          <div className="flex items-center gap-2 font-bold text-xl text-teal-600">
-            <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="flex items-center gap-2 font-bold text-xl text-teal-600 col-span-2 md:col-span-1">
+            <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center shrink-0">
               <span className="text-white">K</span>
             </div>
-            Knowledge Hub & Tracking
+            <span className="truncate">Knowledge Hub & Tracking</span>
           </div>
 
-          <nav className="flex justify-center">
+          <nav className="hidden md:flex justify-center">
             <button
               onClick={() => setShowContact(true)}
               className="text-gray-500 hover:text-[#0d9488] font-black transition-all text-xs uppercase tracking-[0.2em]"
@@ -107,16 +106,26 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
             </button>
           </nav>
 
-          <div className="flex justify-end invisible md:visible">
-            <span className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">Hệ thống UIT</span>
+          <div className="flex justify-end items-center gap-4">
+            <button
+              onClick={() => setShowContact(true)}
+              className="md:hidden text-gray-500 hover:text-[#0d9488] font-black transition-all text-[10px] uppercase tracking-widest"
+            >
+              Liên hệ
+            </button>
+            <span className="hidden md:inline-block text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">Hệ thống UIT</span>
           </div>
         </div>
       </header>
 
-      <main className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
-        <div className="bg-white rounded-[3rem] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.12)] overflow-hidden max-w-4xl w-full border border-gray-50">
+      {/* ĐÃ FIX: Thêm py-8 để mobile có khoảng thở trên dưới */}
+      <main className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] px-4 py-8">
+        {/* ĐÃ FIX: Giảm bo góc trên mobile (rounded-3xl) và giữ bo góc lớn trên PC (md:rounded-[3rem]) */}
+        <div className="bg-white rounded-3xl md:rounded-[3rem] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.12)] overflow-hidden max-w-4xl w-full border border-gray-50">
           <div className="grid grid-cols-1 md:grid-cols-2">
-            <div className="bg-[#fcfcfc] p-12 flex flex-col items-center justify-center border-r border-gray-50">
+
+            {/* ĐÃ FIX: Ẩn hoàn toàn Panel Banner trên màn hình nhỏ (hidden md:flex) */}
+            <div className="hidden md:flex bg-[#fcfcfc] p-12 flex-col items-center justify-center border-r border-gray-50">
               <div className="text-center">
                 <div className="text-8xl mb-8 animate-pulse drop-shadow-xl">🚀</div>
                 <h3 className="text-gray-900 font-black text-2xl mb-2 tracking-tight">Hành trình GPA 9+</h3>
@@ -124,7 +133,8 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
               </div>
             </div>
 
-            <div className="p-10 md:p-14 bg-white flex flex-col justify-center">
+            {/* ĐÃ FIX: Tinh chỉnh padding vừa phải cho Mobile (p-8) và PC (md:p-14) */}
+            <div className="p-8 sm:p-10 md:p-14 bg-white flex flex-col justify-center">
               <div className="space-y-8">
                 <div>
                   <h2 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">
@@ -155,7 +165,6 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
                       placeholder="••••••••"
                       className="w-full px-5 py-4 text-sm bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#0d9488] focus:bg-white transition-all outline-none font-bold"
                     />
-                    {/* BỔ SUNG: Cảnh báo realtime nếu đang ở chế độ Đăng ký và pass < 6 */}
                     {!isLogin && password.length > 0 && password.length < 6 && (
                       <p className="text-red-500 text-[10px] font-bold mt-1 ml-1 animate-pulse">
                         Mật khẩu phải có ít nhất 6 ký tự
@@ -178,7 +187,6 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
 
                 <button
                   onClick={handleAuth}
-                  /* BỔ SUNG: Khóa nút nếu ở chế độ Đăng ký mà pass chưa đủ 6 ký tự */
                   disabled={isLoading || !username || !password || (!isLogin && password.length < 6)}
                   className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-black py-5 rounded-2xl transition-all shadow-[0_10px_30px_-5px_rgba(13,148,136,0.3)] flex justify-center items-center gap-2 uppercase tracking-[0.2em] text-xs active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -189,7 +197,7 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
                   <button
                     onClick={() => {
                       setIsLogin(!isLogin);
-                      setPassword(''); // Reset pass khi chuyển tab để tránh kẹt cảnh báo
+                      setPassword('');
                     }}
                     className="text-[10px] font-black text-gray-400 hover:text-[#0d9488] transition-colors uppercase tracking-widest"
                   >
