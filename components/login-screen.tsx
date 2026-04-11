@@ -47,6 +47,12 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
           setIsLoading(false);
           return;
         }
+        // Double check ở FE phòng trường hợp user can thiệp DOM bật nút Submit
+        if (password.length < 6) {
+          alert('Mật khẩu quá ngắn!');
+          setIsLoading(false);
+          return;
+        }
         await axiosClient.post('/auth/register', {
           username, password, major_id: parseInt(selectedMajor)
         });
@@ -78,7 +84,6 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
 
   return (
     <div className="min-h-screen bg-[#fafafa] relative overflow-hidden font-sans antialiased text-gray-900">
-      {/* Background tinh giản */}
       <div className="absolute inset-0 pointer-events-none opacity-40">
         <div className="absolute top-20 left-10 text-stone-200 text-6xl">📚</div>
         <div className="absolute bottom-20 right-20 text-teal-100 text-7xl">🎯</div>
@@ -122,7 +127,6 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
             <div className="p-10 md:p-14 bg-white flex flex-col justify-center">
               <div className="space-y-8">
                 <div>
-                  {/* Tiêu đề chính: font-black + tracking-tight */}
                   <h2 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">
                     {isLogin ? 'Chào mừng trở lại' : 'Gia nhập Hub'}
                   </h2>
@@ -151,6 +155,12 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
                       placeholder="••••••••"
                       className="w-full px-5 py-4 text-sm bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#0d9488] focus:bg-white transition-all outline-none font-bold"
                     />
+                    {/* BỔ SUNG: Cảnh báo realtime nếu đang ở chế độ Đăng ký và pass < 6 */}
+                    {!isLogin && password.length > 0 && password.length < 6 && (
+                      <p className="text-red-500 text-[10px] font-bold mt-1 ml-1 animate-pulse">
+                        Mật khẩu phải có ít nhất 6 ký tự
+                      </p>
+                    )}
                   </div>
                   {!isLogin && (
                     <div className="space-y-2">
@@ -168,15 +178,19 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
 
                 <button
                   onClick={handleAuth}
-                  disabled={isLoading || !username || !password}
-                  className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-black py-5 rounded-2xl transition-all shadow-[0_10px_30px_-5px_rgba(13,148,136,0.3)] flex justify-center items-center gap-2 uppercase tracking-[0.2em] text-xs active:scale-95"
+                  /* BỔ SUNG: Khóa nút nếu ở chế độ Đăng ký mà pass chưa đủ 6 ký tự */
+                  disabled={isLoading || !username || !password || (!isLogin && password.length < 6)}
+                  className="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white font-black py-5 rounded-2xl transition-all shadow-[0_10px_30px_-5px_rgba(13,148,136,0.3)] flex justify-center items-center gap-2 uppercase tracking-[0.2em] text-xs active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : (isLogin ? 'Đăng nhập' : 'Tạo tài khoản')}
                 </button>
 
                 <div className="text-center pt-2">
                   <button
-                    onClick={() => setIsLogin(!isLogin)}
+                    onClick={() => {
+                      setIsLogin(!isLogin);
+                      setPassword(''); // Reset pass khi chuyển tab để tránh kẹt cảnh báo
+                    }}
                     className="text-[10px] font-black text-gray-400 hover:text-[#0d9488] transition-colors uppercase tracking-widest"
                   >
                     {isLogin ? 'Bạn chưa có tài khoản? Tạo mới' : 'Đã có tài khoản? Đăng nhập ngay'}
