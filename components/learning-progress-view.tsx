@@ -21,7 +21,6 @@ interface ProgressData {
   subjects: SubjectData[];
 }
 
-// Component con: Hiển thị dòng Môn học
 function SubjectRow({ item, onUpdate }: { item: SubjectData, onUpdate: (id: number, isComp: boolean, score: any) => void }) {
   const [isCompleted, setIsCompleted] = useState(item.is_completed);
   const [score, setScore] = useState<string | number>(item.score);
@@ -29,12 +28,11 @@ function SubjectRow({ item, onUpdate }: { item: SubjectData, onUpdate: (id: numb
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setIsCompleted(checked);
-    if (!checked) setScore(''); 
+    if (!checked) setScore('');
     onUpdate(item.id, checked, checked ? score : '');
   };
 
   const handleBlur = () => {
-    // Chỉ cập nhật khi đã hoàn thành môn học và có sự thay đổi về điểm
     if (isCompleted && score !== item.score) {
       onUpdate(item.id, isCompleted, score);
     }
@@ -44,8 +42,8 @@ function SubjectRow({ item, onUpdate }: { item: SubjectData, onUpdate: (id: numb
     <div className={`flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-3xl border-2 transition-all duration-300 ${isCompleted ? 'bg-teal-50/40 border-teal-200' : 'bg-white border-gray-100 hover:border-teal-100'} shadow-sm gap-4`}>
       <div className="flex items-start gap-4 flex-1">
         <div className="relative flex items-center">
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             checked={isCompleted}
             onChange={handleCheck}
             className="w-6 h-6 text-teal-600 rounded-lg border-gray-300 focus:ring-teal-500 cursor-pointer transition-all"
@@ -106,15 +104,51 @@ export function LearningProgressView() {
   }, []);
 
   const handleUpdateRecord = async (subjectId: number, isCompleted: boolean, score: any) => {
+    // OPTIMISTIC UI: Cập nhật RAM ngay lập tức để không bị khựng
+    setData(prevData => {
+      if (!prevData) return prevData;
+
+      const updatedSubjects = prevData.subjects.map(subj => {
+        if (subj.id === subjectId) {
+          return { ...subj, is_completed: isCompleted, score: isCompleted ? score : '' };
+        }
+        return subj;
+      });
+
+      let newCompletedCredits = 0;
+      let newTotalGradePoints = 0;
+
+      updatedSubjects.forEach(subj => {
+        if (subj.is_completed) {
+          newCompletedCredits += subj.credits;
+          if (subj.score !== '' && subj.score !== null && !isNaN(parseFloat(subj.score.toString()))) {
+            newTotalGradePoints += parseFloat(subj.score.toString()) * subj.credits;
+          }
+        }
+      });
+
+      const newCgpa = newCompletedCredits > 0 && newTotalGradePoints > 0
+        ? parseFloat((newTotalGradePoints / newCompletedCredits).toFixed(2))
+        : 0;
+
+      return {
+        ...prevData,
+        subjects: updatedSubjects,
+        completedCredits: newCompletedCredits,
+        cgpa: newCgpa
+      };
+    });
+
+    // GỌI API NGẦM
     try {
       await axiosClient.post('/roadmap/grade', {
         subject_id: subjectId,
         is_completed: isCompleted,
-        score: score
+        score: score === '' ? null : score
       });
-      fetchProgressData(); // Tải lại để cập nhật CGPA và biểu đồ
     } catch (error) {
       alert("Lỗi hệ thống: Không thể lưu điểm số!");
+      fetchProgressData(); // Lỗi thì tải lại từ server để đồng bộ
     }
   };
 
@@ -123,33 +157,23 @@ export function LearningProgressView() {
 
   const percentage = data.totalCredits > 0 ? Math.round((data.completedCredits / data.totalCredits) * 100) : 0;
   const chartData = [
-    { name: "Đã hoàn thành", value: data.completedCredits, fill: "#0d9488" }, 
-    { name: "Còn lại", value: Math.max(0, data.totalCredits - data.completedCredits), fill: "#f1f5f9" } 
+    { name: "Đã hoàn thành", value: data.completedCredits, fill: "#0d9488" },
+    { name: "Còn lại", value: Math.max(0, data.totalCredits - data.completedCredits), fill: "#f1f5f9" }
   ];
 
-  // Mobile Summary Component
   const MobileSummary = () => (
     <div className="fixed bottom-0 left-0 w-full z-50 bg-white border-t border-gray-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:hidden">
       <div className="flex items-center justify-between gap-4">
-        {/* CGPA Display */}
         <div className="flex flex-col">
           <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">CGPA</span>
           <span className="text-2xl font-black text-teal-600">{data.cgpa}</span>
         </div>
-        
-        {/* Divider */}
         <div className="h-10 w-px bg-gray-200"></div>
-        
-        {/* Progress Display */}
         <div className="flex flex-col">
           <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Tiến độ</span>
           <span className="text-2xl font-black text-teal-600">{percentage}%</span>
         </div>
-        
-        {/* Divider */}
         <div className="h-10 w-px bg-gray-200"></div>
-        
-        {/* Credits Display */}
         <div className="flex flex-col">
           <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">TC</span>
           <span className="text-2xl font-black text-teal-600">{data.completedCredits}/{data.totalCredits}</span>
@@ -160,7 +184,6 @@ export function LearningProgressView() {
 
   return (
     <div className="min-h-screen bg-[#fafafa] pb-32 md:pb-20">
-      {/* Header */}
       <div className="bg-white border-b border-gray-200 pt-6 md:pt-10 pb-8 md:pb-16 mb-6 md:mb-10">
         <div className="max-w-6xl mx-auto px-4 md:px-6 text-center">
           <div className="w-16 md:w-20 h-16 md:h-20 bg-teal-50 rounded-3xl flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-sm">
@@ -172,7 +195,6 @@ export function LearningProgressView() {
       </div>
 
       <main className="max-w-6xl mx-auto px-4 md:px-6 grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
-        {/* Cột trái - Danh sách môn học */}
         <div className="lg:col-span-2 space-y-6 md:space-y-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
@@ -183,7 +205,7 @@ export function LearningProgressView() {
               {data.subjects.length} Môn
             </div>
           </div>
-          
+
           {data.subjects.length === 0 ? (
             <div className="bg-white p-12 md:p-16 rounded-2xl md:rounded-3xl border-2 border-dashed border-gray-200 text-center">
               <div className="text-4xl md:text-5xl mb-4">📚</div>
@@ -199,9 +221,7 @@ export function LearningProgressView() {
           )}
         </div>
 
-        {/* Cột phải - Thống kê (Hidden on mobile, visible on lg+) */}
         <div className="hidden lg:block space-y-8">
-          {/* Card Điểm trung bình (CGPA) */}
           <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-teal-900 rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden group">
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-teal-400 opacity-10 rounded-full blur-3xl group-hover:opacity-20 transition-opacity"></div>
             <div className="flex items-center gap-3 mb-8">
@@ -222,18 +242,17 @@ export function LearningProgressView() {
             </div>
           </div>
 
-          {/* Card Tiến độ */}
           <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
             <h3 className="text-xl font-black text-gray-900 mb-8 text-center">Tiến độ Tốt nghiệp</h3>
             <div className="flex justify-center mb-8 relative">
               <ResponsiveContainer width={200} height={200}>
                 <PieChart>
-                  <Pie 
-                    data={chartData} 
-                    cx="50%" cy="50%" 
-                    innerRadius={70} outerRadius={95} 
-                    paddingAngle={5} 
-                    dataKey="value" 
+                  <Pie
+                    data={chartData}
+                    cx="50%" cy="50%"
+                    innerRadius={70} outerRadius={95}
+                    paddingAngle={5}
+                    dataKey="value"
                     stroke="none"
                     animationBegin={0}
                     animationDuration={800}
@@ -249,7 +268,7 @@ export function LearningProgressView() {
                 <span className="text-[10px] font-bold text-gray-400 uppercase mt-1">Hoàn thành</span>
               </div>
             </div>
-            
+
             <div className="space-y-3">
               <div className="bg-teal-50 rounded-2xl p-4 flex justify-between items-center border border-teal-100">
                 <span className="text-sm font-bold text-teal-800">Đã tích lũy</span>
@@ -267,8 +286,6 @@ export function LearningProgressView() {
           </div>
         </div>
       </main>
-
-      {/* Mobile Sticky Bottom Summary Bar */}
       <MobileSummary />
     </div>
   );
