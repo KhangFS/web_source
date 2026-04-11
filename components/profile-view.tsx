@@ -31,7 +31,7 @@ export function ProfileView() {
   const handleLogout = async () => {
     try {
       await axiosClient.post('/auth/logout');
-      window.location.reload(); 
+      window.location.reload();
     } catch (error) {
       alert('Lỗi đăng xuất');
     }
@@ -49,7 +49,7 @@ export function ProfileView() {
   return (
     <div className="min-h-screen bg-[#fafafa] p-8">
       <div className="max-w-4xl mx-auto space-y-8">
-        
+
         {/* Header Hồ sơ - Tối giản & Tập trung */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="h-32 bg-gradient-to-r from-teal-500 to-emerald-500"></div>
@@ -60,7 +60,7 @@ export function ProfileView() {
                 <AvatarFallback>{profile.username[0].toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={handleLogout}
                   className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 font-medium rounded-xl border border-red-100 hover:bg-red-100 transition-colors"
                 >
@@ -69,7 +69,7 @@ export function ProfileView() {
                 </button>
               </div>
             </div>
-            
+
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{profile.username}</h1>
               <p className="text-teal-600 font-medium mt-1">{getMajorName(profile.major_id)}</p>
@@ -90,7 +90,7 @@ export function ProfileView() {
             <FileText className="w-5 h-5 text-teal-600" />
             Kho tài liệu của tôi
           </h2>
-          
+
           {profile.documents && profile.documents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {profile.documents.map((doc: any) => (
@@ -108,9 +108,9 @@ export function ProfileView() {
                       <Calendar className="w-3 h-3" />
                       {new Date(doc.created_at).toLocaleDateString('vi-VN')}
                     </span>
-                    <a 
-                      href={doc.drive_link || doc.drive_url} 
-                      target="_blank" 
+                    <a
+                      href={doc.drive_link || doc.drive_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm font-semibold text-teal-600 hover:text-teal-800"
                     >
@@ -124,7 +124,7 @@ export function ProfileView() {
             <div className="bg-white p-12 rounded-3xl border-2 border-dashed border-gray-200 text-center">
               <div className="text-4xl mb-4">📭</div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Chưa có tài liệu nào</h3>
-              <p className="text-gray-500">Bạn chưa chia sẻ tài liệu nào lên Knowledge Hub. Hãy đóng góp ngay nhé!</p>
+              <p className="text-gray-500">Bạn chưa chia sẻ tài liệu nào lên Cộng đồng. Hãy đóng góp ngay nhé!</p>
             </div>
           )}
         </div>
