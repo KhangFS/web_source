@@ -233,7 +233,7 @@ export function CommunityView() {
                       </Avatar>
                       <div>
                         <h4 className="font-black text-gray-900 text-sm">{post.author || 'Ẩn danh'}</h4>
-                        <p className="text-[10px] text-gray-400 font-bold tracking-tighter">Sinh viên UIT • Vừa xong</p>
+                        <p className="text-[10px] text-gray-400 font-bold tracking-tighter"> • Vừa xong</p>
                       </div>
                     </div>
                     <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap mb-6 font-medium">
