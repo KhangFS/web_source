@@ -30,7 +30,7 @@ export function DashboardScreen() {
   const [majors, setMajors] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // FILTER STATES (Đã dọn dẹp sạch sẽ selectedMajor)
+  // FILTER STATES
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'a-z' | 'z-a'>('newest');
   const [selectedSubject, setSelectedSubject] = useState<number | null>(null);
@@ -57,7 +57,7 @@ export function DashboardScreen() {
     fetchData();
   }, []);
 
-  // XỬ LÝ LỌC TÀI LIỆU (Đã gỡ bỏ hoàn toàn logic lọc theo Ngành học)
+  // XỬ LÝ LỌC TÀI LIỆU
   const processedMaterials = materials
     .filter((mat) => {
       const matchSearch = mat.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -69,6 +69,13 @@ export function DashboardScreen() {
       if (sortOrder === 'z-a') return b.title.localeCompare(a.title);
       return b.id - a.id;
     });
+
+  // HÀM FALLBACK: Dò tìm tên môn học từ ID (Đã bổ sung logic thông minh)
+  const getFallbackSubjectName = (subjectId: any) => {
+    if (!subjectId) return 'Tài liệu chung';
+    const subject = subjects.find(s => String(s.subject_id || s.id) === String(subjectId));
+    return subject ? (subject.subject_name || subject.name) : 'Chưa cập nhật';
+  };
 
   const handleDocumentClick = (doc: any) => {
     setSelectedDocument(doc);
@@ -128,31 +135,40 @@ export function DashboardScreen() {
                 ) : (
                   /* Document Grid */
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
-                    {processedMaterials.map((mat) => (
-                      <div
-                        key={mat.id}
-                        onClick={() => handleDocumentClick(mat)}
-                        className="p-4 md:p-5 bg-white rounded-lg md:rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:border-teal-100 hover:-translate-y-1 active:scale-95 transition-all duration-200 flex flex-col justify-between group min-h-[200px]"
-                      >
-                        <div className="min-w-0">
-                          <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-2 md:mb-3 line-clamp-2 group-hover:text-teal-700 transition-colors">
-                            {mat.title}
-                          </h3>
-                          <p className="text-xs md:text-sm text-gray-500 mb-3 md:mb-4 bg-gray-50 inline-block px-2 py-1 rounded-md">
-                            Môn học ID: {mat.subject_id}
-                          </p>
-                        </div>
-                        <a
-                          href={mat.drive_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full py-2 md:py-2.5 bg-teal-50 text-teal-700 text-xs md:text-sm font-semibold rounded-lg md:rounded-xl hover:bg-teal-100 hover:shadow-sm transition-all inline-block text-center mt-auto min-h-[44px] flex items-center justify-center"
-                          onClick={(e) => e.stopPropagation()}
+                    {processedMaterials.map((mat) => {
+                      // ĐÃ SỬA Ở ĐÂY: Logic dò tên và ghép tiền tố "Môn học:"
+                      const rawSubjectName = mat.subject_name || mat.subject?.name || getFallbackSubjectName(mat.subject_id);
+                      const finalSubtitle = rawSubjectName === 'Tài liệu chung'
+                        ? 'Tài liệu chung'
+                        : `Môn học: ${rawSubjectName}`;
+
+                      return (
+                        <div
+                          key={mat.id}
+                          onClick={() => handleDocumentClick(mat)}
+                          className="p-4 md:p-5 bg-white rounded-lg md:rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:border-teal-100 hover:-translate-y-1 active:scale-95 transition-all duration-200 flex flex-col justify-between group min-h-[200px]"
                         >
-                          Mở Link
-                        </a>
-                      </div>
-                    ))}
+                          <div className="min-w-0">
+                            <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-2 md:mb-3 line-clamp-2 group-hover:text-teal-700 transition-colors">
+                              {mat.title}
+                            </h3>
+                            {/* ĐÃ SỬA Ở ĐÂY: Hiển thị finalSubtitle thay vì ID thô */}
+                            <p className="text-xs md:text-sm text-gray-500 mb-3 md:mb-4 bg-gray-50 inline-block px-2 py-1 rounded-md">
+                              {finalSubtitle}
+                            </p>
+                          </div>
+                          <a
+                            href={mat.drive_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-2 md:py-2.5 bg-teal-50 text-teal-700 text-xs md:text-sm font-semibold rounded-lg md:rounded-xl hover:bg-teal-100 hover:shadow-sm transition-all inline-block text-center mt-auto min-h-[44px] flex items-center justify-center"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Mở Link
+                          </a>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </main>
