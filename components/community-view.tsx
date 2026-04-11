@@ -184,7 +184,7 @@ export function CommunityView() {
                   <textarea
                     value={newPostContent}
                     onChange={(e) => setNewPostContent(e.target.value)}
-                    placeholder="Chia sẻ kinh nghiệm học tập hôm nay..."
+                    placeholder="Chia sẻ suy nghĩ của bạn..."
                     className="w-full p-4 rounded-3xl bg-gray-50 border-none resize-none text-sm focus:ring-2 focus:ring-teal-500/20 transition-all placeholder:text-gray-400 font-medium"
                     rows={3}
                   />
