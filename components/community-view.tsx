@@ -140,14 +140,14 @@ export function CommunityView() {
     }
   };
 
-  const getRoboHash = (username: string) => `https://robohash.org/${username || 'anon'}?set=set4&size=150x150`;
+  const getRoboHash = (username: string) => `https://robohash.org/${username || 'anonymous'}?set=set4&size=150x150`;
 
   return (
     <div className="flex-1 p-4 md:p-8 min-h-screen bg-[#fafafa] font-sans">
       <div className="max-w-6xl mx-auto">
         <header className="mb-8">
           <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight mb-2">Cộng đồng</h1>
-          <p className="text-sm md:text-base text-gray-500 font-medium">Nơi sinh viên UIT kết nối và kiến tạo tri thức.</p>
+          <p className="text-sm md:text-base text-gray-500 font-medium">Nơi sinh viên UIT kết nối và chia sẻ tri thức.</p>
         </header>
 
         {/* --- MOBILE STATS CAROUSEL (Mới: Trượt ngang trên Mobile) --- */}
@@ -160,7 +160,7 @@ export function CommunityView() {
             </div>
           </div>
           <div className="min-w-[280px] bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm shrink-0">
-            <div className="flex items-center gap-3 mb-4 text-amber-500"><TrendingUp className="w-5 h-5" /> <span className="text-xs font-bold uppercase tracking-widest">Tiền bối</span></div>
+            <div className="flex items-center gap-3 mb-4 text-amber-500"><TrendingUp className="w-5 h-5" /> <span className="text-xs font-bold uppercase tracking-widest">Thành viên sôi nổi</span></div>
             <div className="flex gap-3">
               {topContributors.slice(0, 3).map((c) => (
                 <Avatar key={c.name} className="w-10 h-10 border-2 border-amber-100"><AvatarImage src={getRoboHash(c.name)} /></Avatar>
@@ -326,7 +326,7 @@ export function CommunityView() {
             <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
               <div className="flex items-center gap-3 mb-8">
                 <TrendingUp className="w-5 h-5 text-amber-500" />
-                <h3 className="font-black text-gray-900 tracking-tight">Thành viên Sôi nổi</h3>
+                <h3 className="font-black text-gray-900 tracking-tight">Thành viên sôi nổi</h3>
               </div>
               <div className="space-y-5">
                 {topContributors.map((c, idx) => (
