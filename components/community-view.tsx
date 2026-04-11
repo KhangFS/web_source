@@ -274,7 +274,7 @@ export function CommunityView() {
                               </div>
                             ))
                           ) : (
-                            <p className="text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest py-4">Hãy là người đầu tiên bình luận</p>
+                            <p className="text-[10px] text-center text-gray-400 font-bold tracking-widest py-4">Hãy là người đầu tiên bình luận</p>
                           )}
                         </div>
 
@@ -313,12 +313,12 @@ export function CommunityView() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 blur-3xl rounded-full" />
               <div className="flex items-center gap-3 mb-8">
                 <div className="p-2 bg-white/10 rounded-xl"><Users className="w-5 h-5 text-teal-300" /></div>
-                <h3 className="font-bold tracking-wide">Thống kê</h3>
+                <h3 className="font-bold uppercase tracking-wide">Thống kê cộng đồng</h3>
               </div>
               <div className="grid grid-cols-2 gap-6">
                 <div><p className="text-3xl font-black text-teal-400">{stats.members}</p><p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">Thành viên</p></div>
                 <div><p className="text-3xl font-black text-teal-400">{stats.docs}</p><p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">Tài liệu</p></div>
-                <div><p className="text-3xl font-black text-teal-400">{stats.postsToday}</p><p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">Hôm nay</p></div>
+                <div><p className="text-3xl font-black text-teal-400">{stats.postsToday}</p><p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">Bài viết</p></div>
                 <div><p className="text-3xl font-black text-teal-400">{stats.totalComments}</p><p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">Tương tác</p></div>
               </div>
             </div>
@@ -337,7 +337,7 @@ export function CommunityView() {
                     </div>
                     <div>
                       <p className="text-sm font-black text-gray-900 group-hover:text-teal-600 transition-colors">{c.name}</p>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">{c.docs} đóng góp</p>
+                      <p className="text-[10px] text-gray-400 font-bold tracking-tighter">{c.docs} đóng góp</p>
                     </div>
                   </div>
                 ))}
