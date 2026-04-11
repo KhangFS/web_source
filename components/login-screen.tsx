@@ -64,8 +64,8 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
     return (
       <div className="min-h-screen bg-[#fafafa] relative animate-in fade-in duration-300 font-sans">
         <div className="absolute top-6 left-6 z-50">
-          <button 
-            onClick={() => setShowContact(false)} 
+          <button
+            onClick={() => setShowContact(false)}
             className="flex items-center gap-2 px-5 py-2.5 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all font-bold"
           >
             ← Quay lại Đăng nhập
@@ -87,15 +87,15 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
       <header className="relative z-10 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4 grid grid-cols-3 items-center">
           <div className="flex items-center gap-2 font-bold text-xl text-teal-600">
-          <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
-            <span className="text-white">K</span>
+            <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
+              <span className="text-white">K</span>
+            </div>
+            Knowledge Hub & Tracking
           </div>
-          Knowledge Hub
-        </div>
 
           <nav className="flex justify-center">
-            <button 
-              onClick={() => setShowContact(true)} 
+            <button
+              onClick={() => setShowContact(true)}
               className="text-gray-500 hover:text-[#0d9488] font-black transition-all text-xs uppercase tracking-[0.2em]"
             >
               Liên hệ
@@ -175,8 +175,8 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
                 </button>
 
                 <div className="text-center pt-2">
-                  <button 
-                    onClick={() => setIsLogin(!isLogin)} 
+                  <button
+                    onClick={() => setIsLogin(!isLogin)}
                     className="text-[10px] font-black text-gray-400 hover:text-[#0d9488] transition-colors uppercase tracking-widest"
                   >
                     {isLogin ? 'Bạn chưa có tài khoản? Tạo mới' : 'Đã có tài khoản? Đăng nhập ngay'}

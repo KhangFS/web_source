@@ -30,13 +30,13 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-40">
       <div className="w-full px-4 md:px-6 py-3 md:py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 md:gap-4">
-          
+
           {/* Logo */}
           <div className="flex items-center gap-2 font-bold text-base md:text-xl text-teal-600 flex-shrink-0">
             <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <span className="text-white text-sm">K</span>
             </div>
-            <span className="hidden sm:inline">Knowledge Hub</span>
+            <span className="hidden sm:inline">Knowledge Hub & Tracking</span>
           </div>
 
           {/* Desktop Navigation Menu - Only visible on md+ */}
@@ -45,11 +45,10 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
-                className={`font-semibold text-sm transition-colors min-h-[44px] flex items-center px-2 ${
-                  currentView === item.id || (currentView === 'reading' && item.id === 'explore')
+                className={`font-semibold text-sm transition-colors min-h-[44px] flex items-center px-2 ${currentView === item.id || (currentView === 'reading' && item.id === 'explore')
                     ? 'text-teal-600'
                     : 'text-gray-500 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 {item.label}
               </button>
@@ -72,7 +71,7 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
             )}
 
             {/* Profile Button - 44x44px minimum touch target */}
-            <button 
+            <button
               onClick={() => handleNavClick('profile')}
               className="w-10 h-10 md:w-11 md:h-11 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center hover:bg-orange-200 active:scale-95 transition-all flex-shrink-0"
               title="Profile"
@@ -83,14 +82,14 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
             {/* Mobile Hamburger Menu - Only visible on small screens */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <button 
+                <button
                   className="md:hidden w-10 h-10 flex items-center justify-center hover:bg-gray-100 active:scale-95 rounded-lg transition-all flex-shrink-0"
                   title="Navigation menu"
                 >
                   <Menu className="w-6 h-6 text-gray-700" />
                 </button>
               </SheetTrigger>
-              
+
               {/* Mobile Navigation Drawer */}
               <SheetContent side="left" className="w-full sm:w-3/4 max-w-xs">
                 <SheetHeader className="mb-6">
@@ -103,11 +102,10 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
                     <button
                       key={item.id}
                       onClick={() => handleNavClick(item.id)}
-                      className={`w-full text-left px-4 py-3 rounded-lg font-semibold text-sm transition-colors min-h-[44px] flex items-center ${
-                        currentView === item.id || (currentView === 'reading' && item.id === 'explore')
+                      className={`w-full text-left px-4 py-3 rounded-lg font-semibold text-sm transition-colors min-h-[44px] flex items-center ${currentView === item.id || (currentView === 'reading' && item.id === 'explore')
                           ? 'bg-teal-50 text-teal-700'
                           : 'text-gray-700 hover:bg-gray-100'
-                      }`}
+                        }`}
                     >
                       {item.label}
                     </button>
