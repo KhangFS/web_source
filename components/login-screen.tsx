@@ -89,15 +89,22 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
       </div>
 
       <header className="relative z-10 bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 py-4 grid grid-cols-3 items-center">
-          <div className="flex items-center gap-2 font-bold text-xl text-teal-600 col-span-2 md:col-span-1">
-            <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center shrink-0">
-              <span className="text-white">K</span>
+        {/* ĐÃ FIX: Chuyển grid thành flex justify-between để tối ưu không gian */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+
+          {/* Khu vực Logo: Cho phép chiếm tối đa 70% màn hình mobile, bỏ truncate */}
+          <div className="flex items-center gap-2 font-bold text-teal-600 max-w-[70%] sm:max-w-none">
+            <div className="w-7 h-7 md:w-8 md:h-8 bg-teal-600 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-white text-sm md:text-base">K</span>
             </div>
-            <span className="truncate">Knowledge Hub & Tracking</span>
+            {/* Chữ sẽ tự động thu nhỏ trên mobile (text-sm) và tự động xuống dòng đẹp mắt nếu màn hình quá hẹp */}
+            <span className="text-sm sm:text-base md:text-xl leading-tight text-wrap">
+              Knowledge Hub & Tracking
+            </span>
           </div>
 
-          <nav className="hidden md:flex justify-center">
+          {/* Nút Liên hệ trên PC (Đặt ra giữa bằng absolute) */}
+          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2">
             <button
               onClick={() => setShowContact(true)}
               className="text-gray-500 hover:text-[#0d9488] font-black transition-all text-xs uppercase tracking-[0.2em]"
@@ -106,7 +113,8 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
             </button>
           </nav>
 
-          <div className="flex justify-end items-center gap-4">
+          {/* Khu vực nút bên phải */}
+          <div className="flex justify-end items-center shrink-0">
             <button
               onClick={() => setShowContact(true)}
               className="md:hidden text-gray-500 hover:text-[#0d9488] font-black transition-all text-[10px] uppercase tracking-widest"
@@ -115,16 +123,14 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
             </button>
             <span className="hidden md:inline-block text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">Hệ thống UIT</span>
           </div>
+
         </div>
       </header>
 
-      {/* ĐÃ FIX: Thêm py-8 để mobile có khoảng thở trên dưới */}
       <main className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] px-4 py-8">
-        {/* ĐÃ FIX: Giảm bo góc trên mobile (rounded-3xl) và giữ bo góc lớn trên PC (md:rounded-[3rem]) */}
         <div className="bg-white rounded-3xl md:rounded-[3rem] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.12)] overflow-hidden max-w-4xl w-full border border-gray-50">
           <div className="grid grid-cols-1 md:grid-cols-2">
 
-            {/* ĐÃ FIX: Ẩn hoàn toàn Panel Banner trên màn hình nhỏ (hidden md:flex) */}
             <div className="hidden md:flex bg-[#fcfcfc] p-12 flex-col items-center justify-center border-r border-gray-50">
               <div className="text-center">
                 <div className="text-8xl mb-8 animate-pulse drop-shadow-xl">🚀</div>
@@ -133,7 +139,6 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
               </div>
             </div>
 
-            {/* ĐÃ FIX: Tinh chỉnh padding vừa phải cho Mobile (p-8) và PC (md:p-14) */}
             <div className="p-8 sm:p-10 md:p-14 bg-white flex flex-col justify-center">
               <div className="space-y-8">
                 <div>
