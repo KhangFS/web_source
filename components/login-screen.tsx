@@ -121,7 +121,7 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
             >
               Liên hệ
             </button>
-            <span className="hidden md:inline-block text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">Hệ thống UIT</span>
+            <span className="hidden md:inline-block text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">Nơi học tập & chia sẻ</span>
           </div>
 
         </div>

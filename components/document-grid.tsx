@@ -12,19 +12,21 @@ const PROFESSIONAL_GRADIENTS = [
 ];
 
 interface DocumentGridProps {
-  materials: any[];     
-  subjects: any[];      
+  materials: any[];
+  subjects: any[];
   onDocumentClick: (doc: any) => void;
 }
 
 export function DocumentGrid({ materials, subjects, onDocumentClick }: DocumentGridProps) {
-  
+
   // Hàm Fallback: Chặn đứng lỗi "ID: 114" bằng cách ép kiểu an toàn
   const getFallbackSubjectName = (subjectId: any) => {
     if (!subjectId) return 'Tài liệu chung';
     // Ép kiểu cả 2 về String để so sánh an toàn tuyệt đối
     const subject = subjects.find(s => String(s.subject_id || s.id) === String(subjectId));
-    return subject ? (subject.subject_name || subject.name) : `Môn học #${subjectId}`;
+
+    // ĐÃ SỬA: Xóa bỏ việc hiển thị ID thô kệch. Trả về chữ "Môn học" chung chung cho gọn gàng.
+    return subject ? (subject.subject_name || subject.name) : 'Môn học';
   };
 
   // Màn hình trống
