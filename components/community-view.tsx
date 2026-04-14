@@ -235,7 +235,7 @@ export function CommunityView() {
                         <h4 className="font-black text-gray-900 text-sm">{post.author || 'Ẩn danh'}</h4>
                         {/* ĐÃ FIX: Thay thế "Vừa xong" bằng Tên ngành học */}
                         <p className="text-[10px] text-gray-400 font-bold tracking-tighter uppercase">
-                          • {post.major_name || post.author_major || 'Sinh viên UIT'} •
+                          • {post.major_name || post.author_major || ''} •
                         </p>
                       </div>
                     </div>
