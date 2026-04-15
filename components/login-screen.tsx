@@ -95,11 +95,11 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
           {/* Khu vực Logo: Cho phép chiếm tối đa 70% màn hình mobile, bỏ truncate */}
           <div className="flex items-center gap-2 font-bold text-teal-600 max-w-[70%] sm:max-w-none">
             <div className="w-7 h-7 md:w-8 md:h-8 bg-teal-600 rounded-lg flex items-center justify-center shrink-0">
-              <span className="text-white text-sm md:text-base">K</span>
+              <span className="text-white text-sm md:text-base">U</span>
             </div>
             {/* Chữ sẽ tự động thu nhỏ trên mobile (text-sm) và tự động xuống dòng đẹp mắt nếu màn hình quá hẹp */}
             <span className="text-sm sm:text-base md:text-xl leading-tight text-wrap">
-              Knowledge Hub & Tracking
+              Learning Hub & Tracker
             </span>
           </div>
 
