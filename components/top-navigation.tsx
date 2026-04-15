@@ -33,9 +33,12 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
 
           {/* Logo */}
           <div className="flex items-center gap-2 font-bold text-base md:text-xl text-teal-600 flex-shrink-0">
-            <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-sm">U</span>
-            </div>
+            {/* ĐÃ FIX: Thay thế khối chữ U bằng thẻ img gọi logo uit.png */}
+            <img
+              src="../uit.png"
+              alt="UIT Logo"
+              className="w-8 h-8 md:w-10 md:h-10 object-contain flex-shrink-0 drop-shadow-sm"
+            />
             <span className="hidden sm:inline">Learning Hub & Tracker</span>
           </div>
 
