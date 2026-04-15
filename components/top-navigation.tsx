@@ -2,6 +2,8 @@
 
 import { Search, User, Menu } from 'lucide-react';
 import { useState } from 'react';
+// ĐÃ FIX BƯỚC 1: Import file ảnh trực tiếp vào component để Bundler nhận diện
+import uitLogo from '../uit.png';
 import {
   Sheet,
   SheetContent,
@@ -33,9 +35,9 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
 
           {/* Logo */}
           <div className="flex items-center gap-2 font-bold text-base md:text-xl text-teal-600 flex-shrink-0">
-            {/* ĐÃ FIX: Thay thế khối chữ U bằng thẻ img gọi logo uit.png */}
+            {/* ĐÃ FIX BƯỚC 2: Gọi thuộc tính .src của object ảnh vừa import */}
             <img
-              src="../uit.png"
+              src={uitLogo.src}
               alt="UIT Logo"
               className="w-8 h-8 md:w-10 md:h-10 object-contain flex-shrink-0 drop-shadow-sm"
             />
