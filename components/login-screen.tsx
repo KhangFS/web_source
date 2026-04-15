@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import axiosClient from '../lib/axiosClient';
 import { ContactView } from './contact-view';
+// ĐÃ FIX BƯỚC 1: Import trực tiếp logo để Bundler của Next.js xử lý
+import uitLogo from '../uit.png';
 
 export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -89,14 +91,16 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
       </div>
 
       <header className="relative z-10 bg-white border-b border-gray-100">
-        {/* ĐÃ FIX: Chuyển grid thành flex justify-between để tối ưu không gian */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
 
           {/* Khu vực Logo: Cho phép chiếm tối đa 70% màn hình mobile, bỏ truncate */}
           <div className="flex items-center gap-2 font-bold text-teal-600 max-w-[70%] sm:max-w-none">
-            <div className="w-7 h-7 md:w-8 md:h-8 bg-teal-600 rounded-lg flex items-center justify-center shrink-0">
-              <span className="text-white text-sm md:text-base">U</span>
-            </div>
+            {/* ĐÃ FIX BƯỚC 2: Gọi logo từ object import, dùng object-contain để chống méo */}
+            <img
+              src={uitLogo.src}
+              alt="UIT Logo"
+              className="w-7 h-7 md:w-8 md:h-8 object-contain shrink-0 drop-shadow-sm"
+            />
             {/* Chữ sẽ tự động thu nhỏ trên mobile (text-sm) và tự động xuống dòng đẹp mắt nếu màn hình quá hẹp */}
             <span className="text-sm sm:text-base md:text-xl leading-tight text-wrap">
               Learning Hub & Tracker
