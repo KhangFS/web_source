@@ -34,9 +34,9 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
           {/* Logo */}
           <div className="flex items-center gap-2 font-bold text-base md:text-xl text-teal-600 flex-shrink-0">
             <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-sm">K</span>
+              <span className="text-white text-sm">U</span>
             </div>
-            <span className="hidden sm:inline">Knowledge Hub & Tracking</span>
+            <span className="hidden sm:inline">Learning Hub & Tracker</span>
           </div>
 
           {/* Desktop Navigation Menu - Only visible on md+ */}
@@ -46,8 +46,8 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
                 className={`font-semibold text-sm transition-colors min-h-[44px] flex items-center px-2 ${currentView === item.id || (currentView === 'reading' && item.id === 'explore')
-                    ? 'text-teal-600'
-                    : 'text-gray-500 hover:text-gray-900'
+                  ? 'text-teal-600'
+                  : 'text-gray-500 hover:text-gray-900'
                   }`}
               >
                 {item.label}
@@ -103,8 +103,8 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
                       key={item.id}
                       onClick={() => handleNavClick(item.id)}
                       className={`w-full text-left px-4 py-3 rounded-lg font-semibold text-sm transition-colors min-h-[44px] flex items-center ${currentView === item.id || (currentView === 'reading' && item.id === 'explore')
-                          ? 'bg-teal-50 text-teal-700'
-                          : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-teal-50 text-teal-700'
+                        : 'text-gray-700 hover:bg-gray-100'
                         }`}
                     >
                       {item.label}
