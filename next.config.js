@@ -4,8 +4,8 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        // Nhập link ngrok đang chạy backend của bạn vào đây
-        destination: NEXT_PUBLIC_API_URL,
+        // ĐÃ FIX: Bắt buộc dùng process.env và nối thêm /:path* ở cuối
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`,
       },
     ]
   },
