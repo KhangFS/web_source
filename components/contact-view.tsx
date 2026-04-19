@@ -31,7 +31,7 @@ export function ContactView() {
       await axiosClient.post('/contact/submit', formData);
       setIsSuccess(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
-      
+
       // Tự động tắt thông báo thành công sau 4 giây
       setTimeout(() => setIsSuccess(false), 4000);
     } catch (error: any) {
@@ -51,21 +51,21 @@ export function ContactView() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          
+
           {/* Left Column: Form */}
           <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
             <h2 className="text-xl font-bold text-gray-800 mb-6">Gửi tin nhắn cho chúng tôi</h2>
-            
+
             {isSuccess ? (
               <div className="h-64 flex flex-col items-center justify-center text-center animate-in zoom-in-95">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle2 className="w-8 h-8 text-green-600" />
+                <div className="w-16 h-16 bg-[#ebf9f6] rounded-full flex items-center justify-center mb-4">
+                  <CheckCircle2 className="w-8 h-8 text-[#7fd6c6]" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Tin nhắn đã được gửi!</h3>
                 <p className="text-gray-500">Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi qua email của bạn sớm nhất có thể.</p>
-                <button 
+                <button
                   onClick={() => setIsSuccess(false)}
-                  className="mt-6 text-blue-500 font-medium hover:text-blue-600"
+                  className="mt-6 text-[#6bc5b4] font-medium hover:text-[#58b2a1]"
                 >
                   Gửi tin nhắn khác
                 </button>
@@ -82,7 +82,7 @@ export function ContactView() {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Nguyễn Văn A"
-                      className="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition-all disabled:opacity-60"
+                      className="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-[#7fd6c6] focus:bg-white transition-all disabled:opacity-60"
                       disabled={isSubmitting}
                     />
                   </div>
@@ -95,7 +95,7 @@ export function ContactView() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="nguyenvana@example.com"
-                      className="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition-all disabled:opacity-60"
+                      className="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-[#7fd6c6] focus:bg-white transition-all disabled:opacity-60"
                       disabled={isSubmitting}
                     />
                   </div>
@@ -110,7 +110,7 @@ export function ContactView() {
                     value={formData.subject}
                     onChange={handleChange}
                     placeholder="Chúng tôi có thể giúp gì cho bạn?"
-                    className="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition-all disabled:opacity-60"
+                    className="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-[#7fd6c6] focus:bg-white transition-all disabled:opacity-60"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -124,7 +124,7 @@ export function ContactView() {
                     onChange={handleChange}
                     placeholder="Hãy cho chúng tôi biết chi tiết vấn đề của bạn..."
                     rows={5}
-                    className="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition-all resize-none disabled:opacity-60"
+                    className="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-[#7fd6c6] focus:bg-white transition-all resize-none disabled:opacity-60"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -136,10 +136,10 @@ export function ContactView() {
                 <button
                   type="submit"
                   disabled={isSubmitting || !formData.name || !formData.email || !formData.subject || !formData.message}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#7fd6c6] hover:bg-[#6bc5b4] text-white font-bold rounded-xl shadow-sm transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
-                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
@@ -153,36 +153,36 @@ export function ContactView() {
 
           {/* Right Column: Contact Info & Hours */}
           <div className="w-full lg:w-96 flex flex-col gap-6">
-            
-            {/* Contact Information Card */}
-            <div className="bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-2xl p-8 text-white shadow-lg shadow-indigo-200/50">
-              <h3 className="text-xl font-bold mb-6">Thông tin Liên hệ</h3>
+
+            {/* Contact Information Card - Updated to match Community Stats dark card */}
+            <div className="bg-[#102a27] rounded-2xl p-8 text-white shadow-lg">
+              <h3 className="text-xl font-bold mb-6 text-white">Thông tin Liên hệ</h3>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
-                    <Mail className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 bg-[#1c403c] rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-[#7fd6c6]" />
                   </div>
                   <div>
-                    <p className="text-sm text-indigo-100 mb-0.5">Email</p>
-                    <p className="font-medium">25520805@uit.edu.vn</p>
+                    <p className="text-sm text-[#8aa3a0] mb-0.5">Email</p>
+                    <p className="font-medium text-white">25520805@uit.edu.vn</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
-                    <Phone className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 bg-[#1c403c] rounded-full flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-[#7fd6c6]" />
                   </div>
                   <div>
-                    <p className="text-sm text-indigo-100 mb-0.5">Điện thoại</p>
-                    <p className="font-medium">+84 354 519 313</p>
+                    <p className="text-sm text-[#8aa3a0] mb-0.5">Điện thoại</p>
+                    <p className="font-medium text-white">+84 354 519 313</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
-                    <MapPin className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 bg-[#1c403c] rounded-full flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-[#7fd6c6]" />
                   </div>
                   <div>
-                    <p className="text-sm text-indigo-100 mb-0.5">Địa chỉ</p>
-                    <p className="font-medium leading-relaxed">
+                    <p className="text-sm text-[#8aa3a0] mb-0.5">Địa chỉ</p>
+                    <p className="font-medium text-white leading-relaxed">
                       Khu phố 34, Phường Linh Xuân, Thành phố Hồ Chí Minh, Việt Nam
                     </p>
                   </div>
