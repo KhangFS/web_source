@@ -2,7 +2,6 @@
 
 import { Search, User, Menu } from 'lucide-react';
 import { useState } from 'react';
-// ĐÃ FIX BƯỚC 1: Import file ảnh trực tiếp vào component để Bundler nhận diện
 import uitLogo from '../uit.png';
 import {
   Sheet,
@@ -32,10 +31,18 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-40">
       <div className="w-full px-4 md:px-6 py-3 md:py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 md:gap-4">
-
-          {/* Logo */}
-          <div className="flex items-center gap-2 font-bold text-base md:text-xl text-teal-600 flex-shrink-0">
-            {/* ĐÃ FIX BƯỚC 2: Gọi thuộc tính .src của object ảnh vừa import */}
+          <div
+            onClick={() => onNavigate('explore')}
+            className="flex items-center gap-2 font-bold text-base md:text-xl text-teal-600 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onNavigate('explore');
+              }
+            }}
+          >
             <img
               src={uitLogo.src}
               alt="UIT Logo"
@@ -44,7 +51,6 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
             <span className="hidden sm:inline">Learning Hub & Tracker</span>
           </div>
 
-          {/* Desktop Navigation Menu - Only visible on md+ */}
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
             {navItems.map(item => (
               <button
@@ -60,7 +66,6 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
             ))}
           </div>
 
-          {/* Right Section: Search & Profile */}
           <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
             {showSearch && (
               <div className="hidden sm:block relative">
@@ -75,7 +80,6 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
               </div>
             )}
 
-            {/* Profile Button - 44x44px minimum touch target */}
             <button
               onClick={() => handleNavClick('profile')}
               className="w-10 h-10 md:w-11 md:h-11 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center hover:bg-orange-200 active:scale-95 transition-all flex-shrink-0"
@@ -84,7 +88,6 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
               <User className="w-5 h-5" />
             </button>
 
-            {/* Mobile Hamburger Menu - Only visible on small screens */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <button
@@ -95,13 +98,11 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
                 </button>
               </SheetTrigger>
 
-              {/* Mobile Navigation Drawer */}
               <SheetContent side="left" className="w-full sm:w-3/4 max-w-xs">
                 <SheetHeader className="mb-6">
                   <SheetTitle>Navigation</SheetTitle>
                 </SheetHeader>
 
-                {/* Mobile Menu Items */}
                 <div className="flex flex-col gap-1">
                   {navItems.map(item => (
                     <button
@@ -117,7 +118,6 @@ export function TopNavigation({ currentView, onNavigate, searchQuery, onSearchCh
                   ))}
                 </div>
 
-                {/* Mobile Search - Inside drawer */}
                 {showSearch && (
                   <div className="mt-6 pt-6 border-t border-gray-200">
                     <div className="relative">
